@@ -1,6 +1,5 @@
--- Owen Xit Hub | Aimbot + ESP (FIX 2026)
--- Key remota + Rayfield desde GitHub raw (más estable)
-
+-- Owen Xit Hub | Aimbot + ESP (FIX CARGA 2026 - GitHub raw)
+-- Key remota
 local KeySystemEnabled = true
 local KeyUrl = "https://pastebin.com/raw/h7RQseud"
 local CorrectKey = "fallback_key"
@@ -25,19 +24,88 @@ end
 
 local savedKey = LoadSavedKey()
 if KeySystemEnabled and savedKey ~= CorrectKey then
-    -- (tu código de key system GUI sin cambios, lo omito por brevedad pero pégalo aquí igual)
-    -- ... todo el bloque de ScreenGui para key ...
+    local entered = false
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Parent = game.CoreGui
+    ScreenGui.Name = "OwenKeyGui"
+    ScreenGui.ResetOnSpawn = false
+    local Frame = Instance.new("Frame")
+    Frame.Size = UDim2.new(0, 300, 0, 180)
+    Frame.Position = UDim2.new(0.5, -150, 0.5, -90)
+    Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    Frame.BorderSizePixel = 0
+    Frame.Parent = ScreenGui
+    local Title = Instance.new("TextLabel")
+    Title.Size = UDim2.new(1, 0, 0, 40)
+    Title.BackgroundTransparency = 1
+    Title.Text = "Owen Xit Hub - Key System (Remota)"
+    Title.TextColor3 = Color3.fromRGB(255, 100, 100)
+    Title.TextSize = 24
+    Title.Font = Enum.Font.SourceSansBold
+    Title.Parent = Frame
+    local InputBox = Instance.new("TextBox")
+    InputBox.Size = UDim2.new(0.8, 0, 0, 40)
+    InputBox.Position = UDim2.new(0.1, 0, 0.3, 0)
+    InputBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    InputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    InputBox.PlaceholderText = "Ingresa la key..."
+    InputBox.Text = ""
+    InputBox.Font = Enum.Font.SourceSans
+    InputBox.TextSize = 18
+    InputBox.Parent = Frame
+    local SubmitButton = Instance.new("TextButton")
+    SubmitButton.Size = UDim2.new(0.8, 0, 0, 40)
+    SubmitButton.Position = UDim2.new(0.1, 0, 0.55, 0)
+    SubmitButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+    SubmitButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    SubmitButton.Text = "Verificar Key"
+    SubmitButton.Font = Enum.Font.SourceSansBold
+    SubmitButton.TextSize = 20
+    SubmitButton.Parent = Frame
+    local Status = Instance.new("TextLabel")
+    Status.Size = UDim2.new(0.8, 0, 0, 30)
+    Status.Position = UDim2.new(0.1, 0, 0.8, 0)
+    Status.BackgroundTransparency = 1
+    Status.Text = ""
+    Status.TextColor3 = Color3.fromRGB(255, 80, 80)
+    Status.TextSize = 16
+    Status.Font = Enum.Font.SourceSans
+    Status.Parent = Frame
+    local function CheckKey(keyInput)
+        if keyInput == CorrectKey then
+            SaveKey(keyInput)
+            entered = true
+            Status.Text = "¡Key correcta! Cargando... (guardada)"
+            Status.TextColor3 = Color3.fromRGB(0, 255, 100)
+            wait(1.5)
+            ScreenGui:Destroy()
+        else
+            Status.Text = "Key incorrecta. Intenta de nuevo."
+            InputBox.Text = ""
+        end
+    end
+    InputBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then CheckKey(InputBox.Text) end
+    end)
+    SubmitButton.MouseButton1Click:Connect(function()
+        CheckKey(InputBox.Text)
+    end)
     repeat task.wait() until entered or not ScreenGui.Parent
     if not entered then return end
 end
 
--- FIX: Load Rayfield desde GitHub raw
-local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua'))()
+-- FIX CARGA: Rayfield desde GitHub raw (más estable en 2026)
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+
 local Window = Rayfield:CreateWindow({
    Name = "Owen Xit Hub",
    LoadingTitle = "El Mejor Hub Del Momento",
    LoadingSubtitle = "Cargando...",
-   ConfigurationSaving = {Enabled = true, FolderName = "RayfieldConfigs", FileName = "OwenXitHub"},
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = "RayfieldConfigs",
+      FileName = "OwenXitHub"
+   },
    KeySystem = false
 })
 
@@ -45,13 +113,13 @@ local AimbotTab = Window:CreateTab("🎯 Aimbot", 4483362458)
 local VisualsTab = Window:CreateTab("🎨 Visuals", 4483362458)
 local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362456)
 
--- Tu código de aimbot descarado (con el fix de CameraType y debug)
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UIS = game:GetService("UserInputService")
 local LP = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
 
+-- Aimbot descarado corregido (Lerp suave pero instantáneo, sin Scriptable para evitar freeze/pegado en cielo)
 getgenv().OwenDescaradoAimbot = {
     Enabled = true,
     TeamCheck = false,
@@ -59,12 +127,13 @@ getgenv().OwenDescaradoAimbot = {
     LockPart = "Head",
     TriggerKey = Enum.UserInputType.MouseButton2,
     FOV_Enabled = true,
-    FOV_Radius = 80,  -- empieza con 80 para test
+    FOV_Radius = 80,  -- empieza alto para test, baja después
     FOV_Color = Color3.fromRGB(255, 50, 50),
     FOV_LockedColor = Color3.fromRGB(255, 150, 150),
     FOV_Thickness = 2,
     FOV_Transparency = 0.8,
-    FOV_Visible = true
+    FOV_Visible = true,
+    SmoothFactor = 0.6  -- 0.6 = rápido pero no freeze, 1 = instant snap
 }
 
 local Descarado = getgenv().OwenDescaradoAimbot
@@ -109,10 +178,10 @@ local function GetClosestTarget()
         local dist = (Vector2.new(screenPos.X, screenPos.Y) - mousePos).Magnitude
         if dist < minDist then
             if Descarado.WallCheck then
-                local params = RaycastParams.new()
-                params.FilterDescendantsInstances = {LP.Character or {}}
-                params.FilterType = Enum.RaycastFilterType.Exclude
-                local result = workspace:Raycast(Camera.CFrame.Position, (part.Position - Camera.CFrame.Position), params)
+                local rayParams = RaycastParams.new()
+                rayParams.FilterDescendantsInstances = {LP.Character or {}}
+                rayParams.FilterType = Enum.RaycastFilterType.Exclude
+                local result = workspace:Raycast(Camera.CFrame.Position, (part.Position - Camera.CFrame.Position), rayParams)
                 if result and not result.Instance:IsDescendantOf(char) then continue end
             end
             minDist = dist
@@ -122,23 +191,7 @@ local function GetClosestTarget()
     return closest
 end
 
-local isAiming = false
-
-UIS.InputBegan:Connect(function(input)
-    if input.UserInputType == Descarado.TriggerKey and Descarado.Enabled then
-        isAiming = true
-        Camera.CameraType = Enum.CameraType.Scriptable
-    end
-end)
-
-UIS.InputEnded:Connect(function(input)
-    if input.UserInputType == Descarado.TriggerKey then
-        isAiming = false
-        Camera.CameraType = Enum.CameraType.Custom
-    end
-end)
-
-RunService.RenderStepped:Connect(function()
+RunService.RenderStepped:Connect(function(delta)
     if not Descarado.Enabled then 
         FOVCircle.Visible = false
         return 
@@ -146,11 +199,12 @@ RunService.RenderStepped:Connect(function()
 
     UpdateFOVCircle()
 
-    if isAiming then
+    if UIS:IsMouseButtonPressed(Descarado.TriggerKey) then
         local targetPart = GetClosestTarget()
         if targetPart then
-            print("[DEBUG] Lock en: " .. targetPart.Parent.Name)
-            Camera.CFrame = CFrame.new(Camera.CFrame.Position, targetPart.Position + Vector3.new(0, 0.1, 0))
+            print("[DEBUG] Lock en: " .. targetPart.Parent.Name)  -- F9 para ver
+            local targetCF = CFrame.new(Camera.CFrame.Position, targetPart.Position + Vector3.new(0, 0.1, 0))
+            Camera.CFrame = Camera.CFrame:Lerp(targetCF, Descarado.SmoothFactor)  -- Suave y controlable, no freeze
             FOVCircle.Color = Descarado.FOV_LockedColor
         else
             FOVCircle.Color = Descarado.FOV_Color
@@ -160,13 +214,56 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- Toggles y sliders (sin cambios, pero asegúrate de tenerlos)
-AimbotTab:CreateToggle({Name = "Enable Aimbot", CurrentValue = true, Callback = function(v) Descarado.Enabled = v; if not v then Camera.CameraType = Enum.CameraType.Custom end end})
-AimbotTab:CreateToggle({Name = "Team Check", CurrentValue = false, Callback = function(v) Descarado.TeamCheck = v end})
-AimbotTab:CreateToggle({Name = "Wall Check", CurrentValue = false, Callback = function(v) Descarado.WallCheck = v end})
-AimbotTab:CreateToggle({Name = "Show FOV Circle", CurrentValue = true, Callback = function(v) Descarado.FOV_Visible = v end})
-AimbotTab:CreateSlider({Name = "FOV Size (80 test / 30-40 rage)", Range = {1, 300}, Increment = 5, CurrentValue = 80, Callback = function(v) Descarado.FOV_Radius = v end})
--- ... agrega tus otros toggles de ESP y settings aquí (pega el resto de tu código original)
+-- Toggles (agrega tus ESP aquí si quieres)
+AimbotTab:CreateToggle({
+   Name = "Enable Aimbot",
+   CurrentValue = true,
+   Flag = "Aimbot_Enabled",
+   Callback = function(v) Descarado.Enabled = v end
+})
+
+AimbotTab:CreateToggle({
+   Name = "Team Check",
+   CurrentValue = false,
+   Flag = "Aimbot_TeamCheck",
+   Callback = function(v) Descarado.TeamCheck = v end
+})
+
+AimbotTab:CreateToggle({
+   Name = "Wall Check",
+   CurrentValue = false,
+   Flag = "Aimbot_WallCheck",
+   Callback = function(v) Descarado.WallCheck = v end
+})
+
+AimbotTab:CreateToggle({
+   Name = "Show FOV Circle",
+   CurrentValue = true,
+   Flag = "FOV_Visible",
+   Callback = function(v) Descarado.FOV_Visible = v end
+})
+
+AimbotTab:CreateSlider({
+   Name = "FOV Size (80 test, 30-40 rage)",
+   Range = {1, 300},
+   Increment = 5,
+   CurrentValue = 80,
+   Flag = "FOV_Radius",
+   Callback = function(v) Descarado.FOV_Radius = v end
+})
+
+AimbotTab:CreateSlider({
+   Name = "Smooth Factor (0.8-1 instant, 0.4 suave)",
+   Range = {0.1, 1},
+   Increment = 0.1,
+   CurrentValue = 0.6,
+   Flag = "SmoothFactor",
+   Callback = function(v) Descarado.SmoothFactor = v end
+})
+
+-- (agrega aquí tus toggles de VisualsTab y SettingsTab originales si los tienes, sin cambios)
 
 Rayfield:LoadConfiguration()
-print("Hub cargado con Rayfield desde GitHub raw")
+
+print("Owen Xit Hub cargado desde GitHub raw - Aimbot sin freeze")
+Rayfield:Notify({Title = "¡Fix Cargado!", Content = "Cámara normal al apuntar, lock suave/instant\nPrueba FOV 80 + Smooth 0.6", Duration = 8})
