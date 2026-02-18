@@ -323,7 +323,7 @@ AimbotTab:CreateColorPicker({
  
 AimbotTab:CreateSlider({
    Name = "FOV Size (1 = SUPER DESCARADO)",
-   Range = {1, 90},
+   Range = {1, 180},
    Increment = 5,
    CurrentValue = 90,
    Flag = "FOV_Radius",
