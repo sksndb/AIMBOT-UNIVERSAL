@@ -377,7 +377,7 @@ AimbotTab:CreateSlider({
 
 AimbotTab:CreateSlider({
    Name = "FOV Radius",
-   Range = {30, 300},
+   Range = {30, 500},
    Increment = 5,
    CurrentValue = 90,
    Flag = "FOVRadius",
