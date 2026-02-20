@@ -148,7 +148,7 @@ getgenv().ExunysDeveloperAimbot = {
     FOVSettings = {
         Enabled = true, Visible = true, Radius = 90, NumSides = 60, Thickness = 1,
         Transparency = 1, Filled = false, RainbowColor = false, RainbowOutlineColor = false,
-        Color = Color3.fromRGB(255, 255, 255), OutlineColor = Color3.fromRGB(0, 0, 0),
+        Color = Color3.fromRGB(0, 0, 0), OutlineColor = Color3.fromRGB(0, 0, 0),
         LockedColor = Color3.fromRGB(255, 150, 150)
     },
     Blacklisted = {},
@@ -172,7 +172,7 @@ local FrameCounter = 0
 
 local ESPSettings = {
     Enabled = false, Boxes = true, Tracers = true, Names = true, Skeleton = true, HealthBars = true,
-    TeamCheck = true, Rainbow = false, Color = Color3.fromRGB(255, 0, 255),
+    TeamCheck = true, Rainbow = false, Color = Color3.fromRGB(0, 0, 0),
     Thickness = 2, TextSize = 16, MaxDistance = 300
 }
 
