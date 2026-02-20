@@ -149,7 +149,7 @@ getgenv().ExunysDeveloperAimbot = {
         Enabled = true, Visible = true, Radius = 90, NumSides = 60, Thickness = 1,
         Transparency = 1, Filled = false, RainbowColor = false, RainbowOutlineColor = false,
         Color = Color3.fromRGB(0, 0, 0), OutlineColor = Color3.fromRGB(0, 0, 0),
-        LockedColor = Color3.fromRGB(255, 150, 150)
+        LockedColor = Color3.fromRGB(0, 0, 0)
     },
     Blacklisted = {},
     FOVCircleOutline = Drawing.new("Circle"),
