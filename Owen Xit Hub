@@ -318,7 +318,7 @@ AimbotTab:CreateToggle({
 
 AimbotTab:CreateColorPicker({
     Name = "FOV Circle Color",
-    Color = Color3.fromRGB(255,255,255),
+    Color = Color3.fromRGB(0,0,0),
     Flag = "FOV_Color",
     Callback = function(c) Env.FOVSettings.Color = c end
 })
@@ -399,7 +399,7 @@ VisualsTab:CreateToggle({
 
 VisualsTab:CreateColorPicker({
     Name = "ESP Color",
-    Color = Color3.fromRGB(255,0,255),
+    Color = Color3.fromRGB(0,0,0),
     Flag = "ESP_Color",
     Callback = function(c) ESPSettings.Color = c end
 })
