@@ -131,43 +131,43 @@ local AimbotTab = Window:CreateTab("🎯 Aimbot", 4483362458)
 local VisualsTab = Window:CreateTab("🎨 Visuals", 4483362458)
 local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362456)
 
--- Aimbot Module
+-- AIMBOT GROK ULTIMATE
 getgenv().ExunysDeveloperAimbot = {
-   DeveloperSettings = {
-      UpdateMode = "RenderStepped",
-      RainbowSpeed = 1
-   },
-   Settings = {
-      Enabled = true,
-      TeamCheck = false,
-      AliveCheck = true,
-      WallCheck = false,
-      OffsetToMoveDirection = false,
-      OffsetIncrement = 15,
-      Sensitivity = 0,
-      Sensitivity2 = 3.5,
-      LockMode = 1,
-      LockPart = "Head",
-      TriggerKey = Enum.UserInputType.MouseButton2,
-      Toggle = false
-   },
-   FOVSettings = {
-      Enabled = true,
-      Visible = true,
-      Radius = 90,
-      NumSides = 60,
-      Thickness = 1,
-      Transparency = 1,
-      Filled = false,
-      RainbowColor = false,
-      RainbowOutlineColor = false,
-      Color = Color3.fromRGB(255, 255, 255),
-      OutlineColor = Color3.fromRGB(0, 0, 0),
-      LockedColor = Color3.fromRGB(255, 150, 150)
-   },
-   Blacklisted = {},
-   FOVCircleOutline = Drawing.new("Circle"),
-   FOVCircle = Drawing.new("Circle")
+   DeveloperSettings = {
+      UpdateMode = "RenderStepped",
+      RainbowSpeed = 1
+   },
+   Settings = {
+      Enabled = true,
+      TeamCheck = false,
+      AliveCheck = true,
+      WallCheck = false,
+      OffsetToMoveDirection = false,
+      OffsetIncrement = 15,
+      Sensitivity = 0,
+      Sensitivity2 = 3.5,
+      LockMode = 1,
+      LockPart = "Head",
+      TriggerKey = Enum.UserInputType.MouseButton2,
+      Toggle = false
+   },
+   FOVSettings = {
+      Enabled = true,
+      Visible = true,
+      Radius = 90,
+      NumSides = 60,
+      Thickness = 1,
+      Transparency = 1,
+      Filled = false,
+      RainbowColor = false,
+      RainbowOutlineColor = false,
+      Color = Color3.fromRGB(255, 255, 255),
+      OutlineColor = Color3.fromRGB(0, 0, 0),
+      LockedColor = Color3.fromRGB(255, 150, 150)
+   },
+   Blacklisted = {},
+   FOVCircleOutline = Drawing.new("Circle"),
+   FOVCircle = Drawing.new("Circle")
 }
 local Environment = getgenv().ExunysDeveloperAimbot
 local Players = game:GetService("Players")
@@ -179,46 +179,51 @@ local Camera = workspace.CurrentCamera
 Environment.FOVCircle.Visible = false
 Environment.FOVCircleOutline.Visible = false
 local RequiredDistance, Typing, Running, Animation = 2000, false, false, nil
+local FrameCounter = 0
+
 local function GetRainbowColor()
-   return Color3.fromHSV(tick() % Environment.DeveloperSettings.RainbowSpeed / Environment.DeveloperSettings.RainbowSpeed, 1, 1)
-end
-local function ConvertVector(Vector)
-   return Vector2.new(Vector.X, Vector.Y)
-end
-local function CancelLock()
-   Environment.Locked = nil
-   if Animation then Animation:Cancel() end
-   Running = false
-end
-local function GetClosestPlayer()
-   local Settings = Environment.Settings
-   RequiredDistance = Environment.FOVSettings.Enabled and Environment.FOVSettings.Radius or 2000
-   local Closest = nil
-   for _, Value in ipairs(Players:GetPlayers()) do
-      local Character = Value.Character
-      local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
-      if Value ~= LocalPlayer and not table.find(Environment.Blacklisted, Value.Name) and Character and Character:FindFirstChild(Settings.LockPart) and Humanoid then
-         local PartPosition = Character[Settings.LockPart].Position
-         if Settings.TeamCheck and Value.Team == LocalPlayer.Team then continue end
-         if Settings.AliveCheck and Humanoid.Health <= 0 then continue end
-         if Settings.WallCheck then
-            local Blacklist = LocalPlayer.Character:GetDescendants()
-            for _, v in ipairs(Character:GetDescendants()) do table.insert(Blacklist, v) end
-            if #Camera:GetPartsObscuringTarget({PartPosition}, Blacklist) > 0 then continue end
-         end
-         local Vector, OnScreen = Camera:WorldToViewportPoint(PartPosition)
-         Vector = ConvertVector(Vector)
-         local Distance = (UserInputService:GetMouseLocation() - Vector).Magnitude
-         if Distance < RequiredDistance and OnScreen then
-            RequiredDistance = Distance
-            Closest = Value
-         end
-      end
-   end
-   return Closest
+   return Color3.fromHSV(tick() % Environment.DeveloperSettings.RainbowSpeed / Environment.DeveloperSettings.RainbowSpeed, 1, 1)
 end
 
--- ESP (tu versión original sin cambios)
+local function ConvertVector(Vector)
+   return Vector2.new(Vector.X, Vector.Y)
+end
+
+local function CancelLock()
+   Environment.Locked = nil
+   if Animation then Animation:Cancel() end
+   Running = false
+end
+
+local function GetClosestPlayer()
+   local Settings = Environment.Settings
+   RequiredDistance = Environment.FOVSettings.Enabled and Environment.FOVSettings.Radius or 2000
+   local Closest = nil
+   for _, Value in ipairs(Players:GetPlayers()) do
+      local Character = Value.Character
+      local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
+      if Value ~= LocalPlayer and not table.find(Environment.Blacklisted, Value.Name) and Character and Character:FindFirstChild(Settings.LockPart) and Humanoid then
+         local PartPosition = Character[Settings.LockPart].Position
+         if Settings.TeamCheck and Value.Team == LocalPlayer.Team then continue end
+         if Settings.AliveCheck and Humanoid.Health <= 0 then continue end
+         if Settings.WallCheck then
+            local Blacklist = LocalPlayer.Character and LocalPlayer.Character:GetDescendants() or {}
+            for _, v in ipairs(Character:GetDescendants()) do table.insert(Blacklist, v) end
+            if #Camera:GetPartsObscuringTarget({PartPosition}, Blacklist) > 0 then continue end
+         end
+         local Vector, OnScreen = Camera:WorldToViewportPoint(PartPosition)
+         Vector = ConvertVector(Vector)
+         local Distance = (UserInputService:GetMouseLocation() - Vector).Magnitude
+         if Distance < RequiredDistance and OnScreen then
+            RequiredDistance = Distance
+            Closest = Value
+         end
+      end
+   end
+   return Closest
+end
+
+-- ESP ajustado
 local ESPSettings = {
    Enabled = false,
    Boxes = true, Tracers = true, Names = true, Skeleton = true, HealthBars = true,
@@ -257,7 +262,6 @@ local function RemoveESP(p)
     ESPObjects[p] = nil
 end
 
-local FrameCounter = 0
 RunService.Stepped:Connect(function()
     FrameCounter += 1 if FrameCounter % 3 ~= 0 then return end
     local f = Environment.FOVSettings local s = Environment.Settings local fc = Environment.FOVCircle local fo = Environment.FOVCircleOutline
