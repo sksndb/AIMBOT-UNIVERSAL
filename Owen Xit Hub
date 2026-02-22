@@ -31,7 +31,7 @@ end
 local savedKey = LoadSavedKey()
 
 if KeySystemEnabled and savedKey ~= CorrectKey then
-    print("[DEBUG] Key system activado - esperando key correcta")
+    print("[DEBUG] Key system activado")
     local entered = false
     local ScreenGui = Instance.new("ScreenGui")
     ScreenGui.Parent = game:GetService("CoreGui")
@@ -111,8 +111,7 @@ if KeySystemEnabled and savedKey ~= CorrectKey then
     if not entered then return end
 end
 
--- MAIN SCRIPT
-print("[DEBUG] Key pasada - cargando Rayfield y hub")
+print("[DEBUG] Key pasada - cargando Rayfield")
 
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
@@ -131,7 +130,7 @@ local AimbotTab = Window:CreateTab("🎯 Aimbot", 4483362458)
 local VisualsTab = Window:CreateTab("🎨 Visuals", 4483362458)
 local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362456)
 
--- AIMBOT GROK ULTIMATE
+-- Aimbot Module
 getgenv().ExunysDeveloperAimbot = {
    DeveloperSettings = {
       UpdateMode = "RenderStepped",
@@ -179,7 +178,6 @@ local Camera = workspace.CurrentCamera
 Environment.FOVCircle.Visible = false
 Environment.FOVCircleOutline.Visible = false
 local RequiredDistance, Typing, Running, Animation = 2000, false, false, nil
-local FrameCounter = 0
 
 local function GetRainbowColor()
    return Color3.fromHSV(tick() % Environment.DeveloperSettings.RainbowSpeed / Environment.DeveloperSettings.RainbowSpeed, 1, 1)
@@ -207,7 +205,7 @@ local function GetClosestPlayer()
          if Settings.TeamCheck and Value.Team == LocalPlayer.Team then continue end
          if Settings.AliveCheck and Humanoid.Health <= 0 then continue end
          if Settings.WallCheck then
-            local Blacklist = LocalPlayer.Character and LocalPlayer.Character:GetDescendants() or {}
+            local Blacklist = LocalPlayer.Character:GetDescendants()
             for _, v in ipairs(Character:GetDescendants()) do table.insert(Blacklist, v) end
             if #Camera:GetPartsObscuringTarget({PartPosition}, Blacklist) > 0 then continue end
          end
@@ -223,7 +221,7 @@ local function GetClosestPlayer()
    return Closest
 end
 
--- ESP ajustado
+-- ESP (tu versión original)
 local ESPSettings = {
    Enabled = false,
    Boxes = true, Tracers = true, Names = true, Skeleton = true, HealthBars = true,
@@ -262,6 +260,7 @@ local function RemoveESP(p)
     ESPObjects[p] = nil
 end
 
+local FrameCounter = 0
 RunService.Stepped:Connect(function()
     FrameCounter += 1 if FrameCounter % 3 ~= 0 then return end
     local f = Environment.FOVSettings local s = Environment.Settings local fc = Environment.FOVCircle local fo = Environment.FOVCircleOutline
@@ -357,5 +356,5 @@ SettingsTab:CreateButton({Name = "Reset Aimbot Only", Callback = function() Canc
 
 Rayfield:LoadConfiguration()
 
-print("[DEBUG] Hub cargado completamente - Owen Xit Hub listo")
-Rayfield:Notify({Title = "¡Listo!", Content = "Aimbot Grok Ultimate cargado\nFOV blanco (rojo al lockear)\nMantén click derecho (MB2) para aim\nESP optimizado sin lag", Duration = 8})
+print("[DEBUG] Hub cargado completamente")
+Rayfield:Notify({Title = "¡Listo!", Content = "Aimbot Grok Ultimate cargado\nFOV blanco (rojo al lockear)\nMantén click derecho para aim\nESP optimizado sin lag", Duration = 8})
