@@ -1,6 +1,7 @@
 -- Owen Xit Hub | Aimbot + ESP (OPTIMIZED FPS - NO LAG WITH MANY PLAYERS)
--- Key CONNECTED REMOTELY to https://pastebin.com/raw/h7RQseud
--- Change the key by ONLY editing that pastebin, without touching this script
+-- Key REMOTO: https://pastebin.com/raw/h7RQseud
+
+print("[DEBUG] Script iniciado - Owen Xit Hub")
 
 local KeySystemEnabled = true
 local KeyUrl = "https://pastebin.com/raw/h7RQseud"
@@ -24,17 +25,16 @@ local function LoadSavedKey()
 end
 
 local function SaveKey(key)
-    if writefile then
-        writefile(KeyFile, key)
-    end
+    if writefile then writefile(KeyFile, key) end
 end
 
 local savedKey = LoadSavedKey()
 
 if KeySystemEnabled and savedKey ~= CorrectKey then
+    print("[DEBUG] Key system activado - esperando key correcta")
     local entered = false
     local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.Parent = game.CoreGui
+    ScreenGui.Parent = game:GetService("CoreGui")
     ScreenGui.Name = "OwenKeyGui"
     ScreenGui.ResetOnSpawn = false
 
@@ -111,9 +111,8 @@ if KeySystemEnabled and savedKey ~= CorrectKey then
     if not entered then return end
 end
 
--- ────────────────────────────────────────────────────────────────
--- MAIN SCRIPT - Con aimbot del Grok Ultimate
--- ────────────────────────────────────────────────────────────────
+-- MAIN SCRIPT
+print("[DEBUG] Key pasada - cargando Rayfield y hub")
 
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
@@ -132,12 +131,9 @@ local AimbotTab = Window:CreateTab("🎯 Aimbot", 4483362458)
 local VisualsTab = Window:CreateTab("🎨 Visuals", 4483362458)
 local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362456)
 
--- AIMBOT DEL GROK ULTIMATE
+-- AIMBOT GROK ULTIMATE
 getgenv().ExunysDeveloperAimbot = {
-   DeveloperSettings = {
-      UpdateMode = "RenderStepped",
-      RainbowSpeed = 1
-   },
+   DeveloperSettings = { UpdateMode = "RenderStepped", RainbowSpeed = 1 },
    Settings = {
       Enabled = true,
       TeamCheck = false,
@@ -170,6 +166,7 @@ getgenv().ExunysDeveloperAimbot = {
    FOVCircleOutline = Drawing.new("Circle"),
    FOVCircle = Drawing.new("Circle")
 }
+
 local Environment = getgenv().ExunysDeveloperAimbot
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -177,8 +174,10 @@ local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local LocalPlayer = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
+
 Environment.FOVCircle.Visible = false
 Environment.FOVCircleOutline.Visible = false
+
 local RequiredDistance, Typing, Running, Animation = 2000, false, false, nil
 
 local function GetRainbowColor()
@@ -223,7 +222,7 @@ local function GetClosestPlayer()
    return Closest
 end
 
--- ESP (sin cambios)
+-- ESP (tu versión original sin cambios)
 local ESPSettings = {
    Enabled = false,
    Boxes = true, Tracers = true, Names = true, Skeleton = true, HealthBars = true,
@@ -351,37 +350,12 @@ VisualsTab:CreateColorPicker({Name = "ESP Color", Color = Color3.fromRGB(0,0,0),
 VisualsTab:CreateSlider({Name = "Line Thickness", Range = {1,5}, Increment = 1, CurrentValue = 2, Flag = "ESP_Thickness", Callback = function(v) ESPSettings.Thickness = v end})
 VisualsTab:CreateSlider({Name = "Text Size", Range = {12,24}, Increment = 1, CurrentValue = 16, Flag = "ESP_TextSize", Callback = function(v) ESPSettings.TextSize = v end})
 
-SettingsTab:CreateButton({
-    Name = "Save Configuration Now",
-    Callback = function()
-        Rayfield:SaveConfiguration()
-        Rayfield:Notify({Title = "Saved", Content = "Configuration saved manually", Duration = 4})
-    end
-})
-SettingsTab:CreateButton({
-    Name = "Load Configuration",
-    Callback = function()
-        Rayfield:LoadConfiguration()
-        Rayfield:Notify({Title = "Loaded", Content = "Configuration loaded", Duration = 4})
-    end
-})
-SettingsTab:CreateButton({
-    Name = "Cleanup ESP Only",
-    Callback = function()
-        for p in pairs(ESPObjects) do RemoveESP(p) end
-        Rayfield:Notify({Title = "ESP Cleaned", Content = "All ESP removed", Duration = 3})
-    end
-})
-SettingsTab:CreateButton({
-    Name = "Reset Aimbot Only",
-    Callback = function()
-        CancelLock()
-        Environment.Locked = nil
-        Rayfield:Notify({Title = "Aimbot Reset", Content = "Lock cancelled", Duration = 3})
-    end
-})
+SettingsTab:CreateButton({Name = "Save Configuration Now", Callback = function() Rayfield:SaveConfiguration() Rayfield:Notify({Title = "Saved", Content = "Configuration saved manually", Duration = 4}) end})
+SettingsTab:CreateButton({Name = "Load Configuration", Callback = function() Rayfield:LoadConfiguration() Rayfield:Notify({Title = "Loaded", Content = "Configuration loaded", Duration = 4}) end})
+SettingsTab:CreateButton({Name = "Cleanup ESP Only", Callback = function() for p in pairs(ESPObjects) do RemoveESP(p) end Rayfield:Notify({Title = "ESP Cleaned", Content = "All ESP removed", Duration = 3}) end})
+SettingsTab:CreateButton({Name = "Reset Aimbot Only", Callback = function() CancelLock() Environment.Locked = nil Rayfield:Notify({Title = "Aimbot Reset", Content = "Lock cancelled", Duration = 3}) end})
 
 Rayfield:LoadConfiguration()
 
-print("Owen Xit Hub loaded - Remote key: " .. KeyUrl .. " = " .. CorrectKey .. " | Aimbot GROK ULTIMATE")
-Rayfield:Notify({Title = "¡Listo!", Content = "Aimbot del Grok Ultimate cargado\nFOV blanco con borde (rojo al lockear)\nMantén click derecho para aim\nESP sin cambios", Duration = 8})
+print("[DEBUG] Hub cargado completamente - Owen Xit Hub listo")
+Rayfield:Notify({Title = "¡Listo!", Content = "Aimbot Grok Ultimate cargado\nFOV blanco (rojo al lockear)\nMantén click derecho (MB2) para aim\nESP optimizado sin lag", Duration = 8})
