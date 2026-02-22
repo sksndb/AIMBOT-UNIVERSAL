@@ -1,12 +1,8 @@
--- Owen Xit Hub | Aimbot + ESP (OPTIMIZED FPS - NO LAG WITH MANY PLAYERS)
-
+-- Xit Hub | Aimbot + ESP (OPTIMIZED FPS - NO LAG WITH MANY PLAYERS)
 -- Key CONNECTED REMOTELY to https://pastebin.com/raw/h7RQseud
-
 -- Change the key by ONLY editing that pastebin, without touching this script
-
 local KeySystemEnabled = true
 local KeyUrl = "https://pastebin.com/raw/h7RQseud"
-
 -- Download the remote key (with fallback if internet or pastebin fails)
 local CorrectKey = "fallback_key" -- just in case it doesn't load
 pcall(function()
@@ -15,10 +11,8 @@ pcall(function()
         CorrectKey = response:match("^%s*(.-)%s*$") or CorrectKey
     end
 end)
-
 -- Local file to persist (doesn't ask for key every server hop)
 local KeyFile = "owen_xit_key.txt"
-
 local function LoadSavedKey()
     if isfile and isfile(KeyFile) then
         local content = readfile(KeyFile)
@@ -26,30 +20,24 @@ local function LoadSavedKey()
     end
     return nil
 end
-
 local function SaveKey(key)
     if writefile then
         writefile(KeyFile, key)
     end
 end
-
 local savedKey = LoadSavedKey()
-
 if KeySystemEnabled and savedKey ~= CorrectKey then
     local entered = false
-
     local ScreenGui = Instance.new("ScreenGui")
     ScreenGui.Parent = game.CoreGui
     ScreenGui.Name = "OwenKeyGui"
     ScreenGui.ResetOnSpawn = false
-
     local Frame = Instance.new("Frame")
     Frame.Size = UDim2.new(0, 300, 0, 180)
     Frame.Position = UDim2.new(0.5, -150, 0.5, -90)
     Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     Frame.BorderSizePixel = 0
     Frame.Parent = ScreenGui
-
     local Title = Instance.new("TextLabel")
     Title.Size = UDim2.new(1, 0, 0, 40)
     Title.BackgroundTransparency = 1
@@ -58,7 +46,6 @@ if KeySystemEnabled and savedKey ~= CorrectKey then
     Title.TextSize = 24
     Title.Font = Enum.Font.SourceSansBold
     Title.Parent = Frame
-
     local InputBox = Instance.new("TextBox")
     InputBox.Size = UDim2.new(0.8, 0, 0, 40)
     InputBox.Position = UDim2.new(0.1, 0, 0.3, 0)
@@ -69,7 +56,6 @@ if KeySystemEnabled and savedKey ~= CorrectKey then
     InputBox.Font = Enum.Font.SourceSans
     InputBox.TextSize = 18
     InputBox.Parent = Frame
-
     local SubmitButton = Instance.new("TextButton")
     SubmitButton.Size = UDim2.new(0.8, 0, 0, 40)
     SubmitButton.Position = UDim2.new(0.1, 0, 0.55, 0)
@@ -79,7 +65,6 @@ if KeySystemEnabled and savedKey ~= CorrectKey then
     SubmitButton.Font = Enum.Font.SourceSansBold
     SubmitButton.TextSize = 20
     SubmitButton.Parent = Frame
-
     local Status = Instance.new("TextLabel")
     Status.Size = UDim2.new(0.8, 0, 0, 30)
     Status.Position = UDim2.new(0.1, 0, 0.8, 0)
@@ -89,7 +74,6 @@ if KeySystemEnabled and savedKey ~= CorrectKey then
     Status.TextSize = 16
     Status.Font = Enum.Font.SourceSans
     Status.Parent = Frame
-
     local function CheckKey(keyInput)
         if keyInput == CorrectKey then
             SaveKey(keyInput)
@@ -103,25 +87,19 @@ if KeySystemEnabled and savedKey ~= CorrectKey then
             InputBox.Text = ""
         end
     end
-
     InputBox.FocusLost:Connect(function(enterPressed)
         if enterPressed then CheckKey(InputBox.Text) end
     end)
-
     SubmitButton.MouseButton1Click:Connect(function()
         CheckKey(InputBox.Text)
     end)
-
     repeat task.wait() until entered or not ScreenGui.Parent
     if not entered then return end
 end
-
 -- ────────────────────────────────────────────────────────────────
 -- MAIN SCRIPT
 -- ────────────────────────────────────────────────────────────────
-
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-
 local Window = Rayfield:CreateWindow({
     Name = "Owen Xit Hub",
     LoadingTitle = "The Best Hub Right Now",
@@ -133,53 +111,108 @@ local Window = Rayfield:CreateWindow({
     },
     KeySystem = false
 })
-
 local AimbotTab = Window:CreateTab("🎯 Aimbot", 4483362458)
 local VisualsTab = Window:CreateTab("🎨 Visuals", 4483362458)
 local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362456)
-
+-- Aimbot from Grok Ultimate
 getgenv().ExunysDeveloperAimbot = {
-    DeveloperSettings = {RainbowSpeed = 1},
-    Settings = {
-        Enabled = true, TeamCheck = false, AliveCheck = true, WallCheck = false,
-        Sensitivity = 0, Sensitivity2 = 3.5, LockMode = 1, LockPart = "Head",
-        TriggerKey = Enum.UserInputType.MouseButton2, Toggle = false
-    },
-    FOVSettings = {
-        Enabled = true, Visible = true, Radius = 90, NumSides = 60, Thickness = 1,
-        Transparency = 1, Filled = false, RainbowColor = false, RainbowOutlineColor = false,
-        Color = Color3.fromRGB(0, 0, 0), OutlineColor = Color3.fromRGB(0, 0, 0),
-        LockedColor = Color3.fromRGB(0, 0, 0)
-    },
-    Blacklisted = {},
-    FOVCircleOutline = Drawing.new("Circle"),
-    FOVCircle = Drawing.new("Circle")
+   DeveloperSettings = {
+      UpdateMode = "RenderStepped",
+      RainbowSpeed = 1
+   },
+   Settings = {
+      Enabled = true,
+      TeamCheck = false,
+      AliveCheck = true,
+      WallCheck = false,
+      OffsetToMoveDirection = false,
+      OffsetIncrement = 15,
+      Sensitivity = 0,
+      Sensitivity2 = 3.5,
+      LockMode = 1,
+      LockPart = "Head",
+      TriggerKey = Enum.UserInputType.MouseButton2,
+      Toggle = false
+   },
+   FOVSettings = {
+      Enabled = true,
+      Visible = true,
+      Radius = 90,
+      NumSides = 60,
+      Thickness = 1,
+      Transparency = 1,
+      Filled = false,
+      RainbowColor = false,
+      RainbowOutlineColor = false,
+      Color = Color3.fromRGB(255, 255, 255),
+      OutlineColor = Color3.fromRGB(0, 0, 0),
+      LockedColor = Color3.fromRGB(255, 150, 150)
+   },
+   Blacklisted = {},
+   FOVCircleOutline = Drawing.new("Circle"),
+   FOVCircle = Drawing.new("Circle")
 }
-
-local Env = getgenv().ExunysDeveloperAimbot
+local Environment = getgenv().ExunysDeveloperAimbot
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-local UIS = game:GetService("UserInputService")
+local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
-local LP = Players.LocalPlayer
+local LocalPlayer = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
-
-Env.FOVCircle.Visible = false
-Env.FOVCircleOutline.Visible = false
-
-local RequiredDistance, Typing, Running, CurrentTween = 2000, false, false, nil
-local FrameCounter = 0
-
+Environment.FOVCircle.Visible = false
+Environment.FOVCircleOutline.Visible = false
+local RequiredDistance, Typing, Running, Animation = 2000, false, false, nil
+local function GetRainbowColor()
+   return Color3.fromHSV(tick() % Environment.DeveloperSettings.RainbowSpeed / Environment.DeveloperSettings.RainbowSpeed, 1, 1)
+end
+local function ConvertVector(Vector)
+   return Vector2.new(Vector.X, Vector.Y)
+end
+local function CancelLock()
+   Environment.Locked = nil
+   if Animation then Animation:Cancel() end
+   Running = false
+end
+local function GetClosestPlayer()
+   local Settings = Environment.Settings
+   RequiredDistance = Environment.FOVSettings.Enabled and Environment.FOVSettings.Radius or 2000
+   local Closest = nil
+   for _, Value in ipairs(Players:GetPlayers()) do
+      local Character = Value.Character
+      local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
+      if Value ~= LocalPlayer and not table.find(Environment.Blacklisted, Value.Name) and Character and Character:FindFirstChild(Settings.LockPart) and Humanoid then
+         local PartPosition = Character[Settings.LockPart].Position
+         if Settings.TeamCheck and Value.Team == LocalPlayer.Team then continue end
+         if Settings.AliveCheck and Humanoid.Health <= 0 then continue end
+         if Settings.WallCheck then
+            local Blacklist = LocalPlayer.Character:GetDescendants()
+            for _, v in ipairs(Character:GetDescendants()) do table.insert(Blacklist, v) end
+            if #Camera:GetPartsObscuringTarget({PartPosition}, Blacklist) > 0 then continue end
+         end
+         local Vector, OnScreen = Camera:WorldToViewportPoint(PartPosition)
+         Vector = ConvertVector(Vector)
+         local Distance = (UserInputService:GetMouseLocation() - Vector).Magnitude
+         if Distance < RequiredDistance and OnScreen then
+            RequiredDistance = Distance
+            Closest = Value
+         end
+      end
+   end
+   return Closest
+end
+-- ESP (original sin cambios)
 local ESPSettings = {
-    Enabled = false, Boxes = true, Tracers = true, Names = true, Skeleton = true, HealthBars = true,
-    TeamCheck = true, Rainbow = false, Color = Color3.fromRGB(0, 0, 0),
-    Thickness = 2, TextSize = 16, MaxDistance = 300
+   Enabled = false,
+   Boxes = true, Tracers = true, Names = true, Skeleton = true, HealthBars = true,
+   TeamCheck = true,
+   Rainbow = false,
+   Color = Color3.fromRGB(0, 0, 0),
+   Thickness = 2,
+   TextSize = 16, MaxDistance = 300
 }
-
 local ESPObjects = {}
 local R15Links = {{"Head","UpperTorso"}, {"UpperTorso","LowerTorso"}, {"LowerTorso","LeftUpperLeg"},{"LeftUpperLeg","LeftLowerLeg"},{"LeftLowerLeg","LeftFoot"}, {"LowerTorso","RightUpperLeg"},{"RightUpperLeg","RightLowerLeg"},{"RightLowerLeg","RightFoot"}, {"UpperTorso","LeftUpperArm"},{"LeftUpperArm","LeftLowerArm"},{"LeftLowerArm","LeftHand"}, {"UpperTorso","RightUpperArm"},{"RightUpperArm","RightLowerArm"},{"RightLowerArm","RightHand"}}
 local R6Links = {{"Head","Torso"}, {"Torso","Left Arm"}, {"Torso","Right Arm"}, {"Torso","Left Leg"}, {"Torso","Right Leg"}}
-
 local function CreateESP(p)
     if ESPObjects[p] then return end
     local char = p.Character or p.CharacterAdded:Wait()
@@ -197,7 +230,6 @@ local function CreateESP(p)
     data.Highlight = Instance.new("Highlight") data.Highlight.FillTransparency = 0.4 data.Highlight.OutlineTransparency = 0 data.Highlight.Parent = Camera
     ESPObjects[p] = data
 end
-
 local function RemoveESP(p)
     local d = ESPObjects[p] if not d then return end
     if d.Box then d.Box:Remove() end if d.Tracer then d.Tracer:Remove() end if d.Name then d.Name:Remove() end
@@ -205,42 +237,22 @@ local function RemoveESP(p)
     for _, l in ipairs(d.SkelLines or {}) do l:Remove() end if d.Highlight then d.Highlight:Destroy() end
     ESPObjects[p] = nil
 end
-
-local function GetClosestPlayer()
-    local s = Env.Settings local visRad = Env.FOVSettings.Radius local intRad = 330 - visRad RequiredDistance = Env.FOVSettings.Enabled and intRad or 2000
-    local Closest, dist = nil, RequiredDistance
-    for _, p in Players:GetPlayers() do
-        if p == LP then continue end local c = p.Character local h = c and c:FindFirstChildOfClass("Humanoid")
-        if not (c and h and h.Health > 0 and c:FindFirstChild(s.LockPart)) then continue end
-        if s.TeamCheck and p.Team == LP.Team then continue end if table.find(Env.Blacklisted, p.Name) then continue end
-        local part = c[s.LockPart]
-        if s.WallCheck then
-            local parts = LP.Character and LP.Character:GetDescendants() or {}
-            for _, v in c:GetDescendants() do table.insert(parts, v) end
-            if #Camera:GetPartsObscuringTarget({part.Position}, parts) > 0 then continue end
-        end
-        local vec, onScr = Camera:WorldToViewportPoint(part.Position)
-        local d = (UIS:GetMouseLocation() - Vector2.new(vec.X, vec.Y)).Magnitude
-        if d < dist and onScr then dist = d Closest = p end
-    end
-    return Closest
-end
-
+local FrameCounter = 0
 RunService.Stepped:Connect(function()
     FrameCounter += 1 if FrameCounter % 3 ~= 0 then return end
-    local f = Env.FOVSettings local s = Env.Settings local fc = Env.FOVCircle local fo = Env.FOVCircleOutline
-    local col = Env.Locked and f.LockedColor or (f.RainbowColor and Color3.fromHSV(tick() % 5, 1, 1) or f.Color)
+    local f = Environment.FOVSettings local s = Environment.Settings local fc = Environment.FOVCircle local fo = Environment.FOVCircleOutline
+    local col = Environment.Locked and f.LockedColor or (f.RainbowColor and Color3.fromHSV(tick() % 5, 1, 1) or f.Color)
     if f.Enabled and s.Enabled then
-        fc.Radius = f.Radius fc.NumSides = f.NumSides fc.Thickness = f.Thickness fc.Transparency = f.Transparency fc.Filled = f.Filled fc.Visible = f.Visible fc.Position = UIS:GetMouseLocation() fc.Color = col
-        fo.Radius = f.Radius + f.Thickness fo.NumSides = f.NumSides fo.Thickness = f.Thickness + 1 fo.Transparency = f.Transparency fo.Visible = f.Visible fo.Position = UIS:GetMouseLocation() fo.Color = f.RainbowOutlineColor and Color3.fromHSV(tick() % 5, 1, 1) or f.OutlineColor
+        fc.Radius = f.Radius fc.NumSides = f.NumSides fc.Thickness = f.Thickness fc.Transparency = f.Transparency fc.Filled = f.Filled fc.Visible = f.Visible fc.Position = UserInputService:GetMouseLocation() fc.Color = col
+        fo.Radius = f.Radius + f.Thickness fo.NumSides = f.NumSides fo.Thickness = f.Thickness + 1 fo.Transparency = f.Transparency fo.Visible = f.Visible fo.Position = UserInputService:GetMouseLocation() fo.Color = f.RainbowOutlineColor and Color3.fromHSV(tick() % 5, 1, 1) or f.OutlineColor
     else fc.Visible = false fo.Visible = false end
     if not ESPSettings.Enabled then return end
     for _, p in Players:GetPlayers() do
-        if p == LP then continue end local c = p.Character local root = c and c:FindFirstChild("HumanoidRootPart") local hum = c and c:FindFirstChild("Humanoid") local head = c and c:FindFirstChild("Head")
+        if p == LocalPlayer then continue end local c = p.Character local root = c and c:FindFirstChild("HumanoidRootPart") local hum = c and c:FindFirstChild("Humanoid") local head = c and c:FindFirstChild("Head")
         if not (root and hum and head and hum.Health > 0) then RemoveESP(p) continue end
-        local dist = (LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") and (LP.Character.HumanoidRootPart.Position - root.Position).Magnitude) or 9999
+        local dist = (LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and (LocalPlayer.Character.HumanoidRootPart.Position - root.Position).Magnitude) or 9999
         if dist > ESPSettings.MaxDistance then RemoveESP(p) continue end
-        if ESPSettings.TeamCheck and p.Team == LP.Team then RemoveESP(p) continue end
+        if ESPSettings.TeamCheck and p.Team == LocalPlayer.Team then RemoveESP(p) continue end
         if not ESPObjects[p] then CreateESP(p) end local d = ESPObjects[p]
         local rPos, onScr = Camera:WorldToViewportPoint(root.Position) if not onScr then d.Box.Visible = false d.Tracer.Visible = false d.Name.Visible = false if d.HBBG then d.HBBG.Visible = false d.HB.Visible = false end for _,l in d.SkelLines do l.Visible = false end d.Highlight.Enabled = false continue end
         local color = ESPSettings.Rainbow and Color3.fromHSV((tick()*5 + p.UserId/255)%1,1,1) or ESPSettings.Color local vis = true
@@ -257,207 +269,58 @@ RunService.Stepped:Connect(function()
         d.Highlight.Adornee = c d.Highlight.FillColor = color d.Highlight.OutlineColor = color d.Highlight.Enabled = vis
     end
 end)
-
 RunService.Heartbeat:Connect(function()
-    if not Running or not Env.Settings.Enabled or not Env.Locked then return end
-    local char = Env.Locked.Character local part = char and char:FindFirstChild(Env.Settings.LockPart)
-    if not part then if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end Env.Locked = nil Running = false return end
-    local target = part.Position local scr = Camera:WorldToViewportPoint(target)
-    if Env.Settings.LockMode == 2 then
-        mousemoverel((scr.X - UIS:GetMouseLocation().X)/Env.Settings.Sensitivity2, (scr.Y - UIS:GetMouseLocation().Y)/Env.Settings.Sensitivity2)
+    if not Running or not Environment.Settings.Enabled or not Environment.Locked then return end
+    local char = Environment.Locked.Character local part = char and char:FindFirstChild(Environment.Settings.LockPart)
+    if not part then if Animation then Animation:Cancel() Animation = nil end Environment.Locked = nil Running = false return end
+    local target = part.Position
+    if Environment.Settings.LockMode == 2 then
+        local scr = Camera:WorldToViewportPoint(target)
+        mousemoverel((scr.X - UserInputService:GetMouseLocation().X)/Environment.Settings.Sensitivity2, (scr.Y - UserInputService:GetMouseLocation().Y)/Environment.Settings.Sensitivity2)
     else
-        if Env.Settings.Sensitivity > 0 then
-            if CurrentTween then CurrentTween:Cancel() end
-            CurrentTween = TweenService:Create(Camera, TweenInfo.new(Env.Settings.Sensitivity, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {CFrame = CFrame.new(Camera.CFrame.Position, target)})
-            CurrentTween:Play()
+        if Environment.Settings.Sensitivity > 0 then
+            if Animation then Animation:Cancel() end
+            Animation = TweenService:Create(Camera, TweenInfo.new(Environment.Settings.Sensitivity, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {CFrame = CFrame.new(Camera.CFrame.Position, target)})
+            Animation:Play()
         else Camera.CFrame = CFrame.new(Camera.CFrame.Position, target) end
     end
 end)
-
-UIS.InputBegan:Connect(function(input)
-    if Typing then return end local trig = Env.Settings.TriggerKey
+UserInputService.InputBegan:Connect(function(input)
+    if Typing then return end local trig = Environment.Settings.TriggerKey
     if input.UserInputType == trig or input.KeyCode == trig then
-        if Env.Settings.Toggle then Running = not Running else Running = true end
-        if Running then Env.Locked = GetClosestPlayer() else if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end Env.Locked = nil end
+        if Environment.Settings.Toggle then Running = not Running else Running = true end
+        if Running then Environment.Locked = GetClosestPlayer() else CancelLock() end
     end
 end)
-
-UIS.InputEnded:Connect(function(input)
-    if Env.Settings.Toggle or Typing then return end local trig = Env.Settings.TriggerKey
-    if input.UserInputType == trig or input.KeyCode == trig then Running = false if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end Env.Locked = nil end
+UserInputService.InputEnded:Connect(function(input)
+    if Environment.Settings.Toggle or Typing then return end local trig = Environment.Settings.TriggerKey
+    if input.UserInputType == trig or input.KeyCode == trig then Running = false CancelLock() end
 end)
-
-UIS.TextBoxFocused:Connect(function() Typing = true end)
-UIS.TextBoxFocusReleased:Connect(function() Typing = false end)
+UserInputService.TextBoxFocused:Connect(function() Typing = true end)
+UserInputService.TextBoxFocusReleased:Connect(function() Typing = false end)
 Players.PlayerRemoving:Connect(RemoveESP)
-
--- ────────────────────────────────────────────────────────────────
--- INTERFACE WITH FLAGS TO SAVE CONFIGURATION
--- ────────────────────────────────────────────────────────────────
-
-AimbotTab:CreateToggle({
-    Name = "Enable Aimbot",
-    CurrentValue = true,
-    Flag = "Aimbot_Enabled",
-    Callback = function(v) Env.Settings.Enabled = v end
-})
-
-AimbotTab:CreateToggle({
-    Name = "Team Check",
-    CurrentValue = false,
-    Flag = "Aimbot_TeamCheck",
-    Callback = function(v) Env.Settings.TeamCheck = v end
-})
-
-AimbotTab:CreateToggle({
-    Name = "Rainbow FOV",
-    CurrentValue = false,
-    Flag = "FOV_Rainbow",
-    Callback = function(v) Env.FOVSettings.RainbowColor = v end
-})
-
-AimbotTab:CreateColorPicker({
-    Name = "FOV Circle Color",
-    Color = Color3.fromRGB(0,0,0),
-    Flag = "FOV_Color",
-    Callback = function(c) Env.FOVSettings.Color = c end
-})
-
-AimbotTab:CreateSlider({
-    Name = "FOV Size (1 = SUPER OBVIOUS)",
-    Range = {1, 180},
-    Increment = 5,
-    CurrentValue = 90,
-    Flag = "FOV_Radius",
-    Callback = function(v) Env.FOVSettings.Radius = v end
-})
-
-AimbotTab:CreateSlider({
-    Name = "Smoothness (0 = instant)",
-    Range = {0,1.5},
-    Increment = 0.05,
-    CurrentValue = 0,
-    Flag = "Aimbot_Smoothness",
-    Callback = function(v) Env.Settings.Sensitivity = v end
-})
-
-VisualsTab:CreateToggle({
-    Name = "Enable ESP",
-    CurrentValue = false,
-    Flag = "ESP_Enabled",
-    Callback = function(v) ESPSettings.Enabled = v end
-})
-
-VisualsTab:CreateToggle({
-    Name = "Boxes",
-    CurrentValue = true,
-    Flag = "ESP_Boxes",
-    Callback = function(v) ESPSettings.Boxes = v end
-})
-
-VisualsTab:CreateToggle({
-    Name = "Tracers",
-    CurrentValue = true,
-    Flag = "ESP_Tracers",
-    Callback = function(v) ESPSettings.Tracers = v end
-})
-
-VisualsTab:CreateToggle({
-    Name = "Names + HP + Distance",
-    CurrentValue = true,
-    Flag = "ESP_Names",
-    Callback = function(v) ESPSettings.Names = v end
-})
-
-VisualsTab:CreateToggle({
-    Name = "Skeleton",
-    CurrentValue = true,
-    Flag = "ESP_Skeleton",
-    Callback = function(v) ESPSettings.Skeleton = v end
-})
-
-VisualsTab:CreateToggle({
-    Name = "Health Bars",
-    CurrentValue = true,
-    Flag = "ESP_HealthBars",
-    Callback = function(v) ESPSettings.HealthBars = v end
-})
-
-VisualsTab:CreateToggle({
-    Name = "Team Check",
-    CurrentValue = true,
-    Flag = "ESP_TeamCheck",
-    Callback = function(v) ESPSettings.TeamCheck = v end
-})
-
-VisualsTab:CreateToggle({
-    Name = "Rainbow Colors",
-    CurrentValue = false,
-    Flag = "ESP_Rainbow",
-    Callback = function(v) ESPSettings.Rainbow = v end
-})
-
-VisualsTab:CreateColorPicker({
-    Name = "ESP Color",
-    Color = Color3.fromRGB(0,0,0),
-    Flag = "ESP_Color",
-    Callback = function(c) ESPSettings.Color = c end
-})
-
-VisualsTab:CreateSlider({
-    Name = "Line Thickness",
-    Range = {1,5},
-    Increment = 1,
-    CurrentValue = 2,
-    Flag = "ESP_Thickness",
-    Callback = function(v) ESPSettings.Thickness = v end
-})
-
-VisualsTab:CreateSlider({
-    Name = "Text Size",
-    Range = {12,24},
-    Increment = 1,
-    CurrentValue = 16,
-    Flag = "ESP_TextSize",
-    Callback = function(v) ESPSettings.TextSize = v end
-})
-
--- Settings Tab
-SettingsTab:CreateButton({
-    Name = "Save Configuration Now",
-    Callback = function()
-        Rayfield:SaveConfiguration()
-        Rayfield:Notify({Title = "Saved", Content = "Configuration saved manually", Duration = 4})
-    end
-})
-
-SettingsTab:CreateButton({
-    Name = "Load Configuration",
-    Callback = function()
-        Rayfield:LoadConfiguration()
-        Rayfield:Notify({Title = "Loaded", Content = "Configuration loaded", Duration = 4})
-    end
-})
-
-SettingsTab:CreateButton({
-    Name = "Cleanup ESP Only",
-    Callback = function()
-        for p in pairs(ESPObjects) do RemoveESP(p) end
-        Rayfield:Notify({Title = "ESP Cleaned", Content = "All ESP removed", Duration = 3})
-    end
-})
-
-SettingsTab:CreateButton({
-    Name = "Reset Aimbot Only",
-    Callback = function()
-        if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end
-        Env.Locked = nil Running = false
-        Rayfield:Notify({Title = "Aimbot Reset", Content = "Lock cancelled", Duration = 3})
-    end
-})
-
--- Auto-load configuration on start (if it exists)
+-- INTERFACE
+AimbotTab:CreateToggle({Name = "Enable Aimbot", CurrentValue = true, Flag = "Aimbot_Enabled", Callback = function(v) Environment.Settings.Enabled = v end})
+AimbotTab:CreateToggle({Name = "Team Check", CurrentValue = false, Flag = "Aimbot_TeamCheck", Callback = function(v) Environment.Settings.TeamCheck = v end})
+AimbotTab:CreateToggle({Name = "Rainbow FOV", CurrentValue = false, Flag = "FOV_Rainbow", Callback = function(v) Environment.FOVSettings.RainbowColor = v end})
+AimbotTab:CreateColorPicker({Name = "FOV Circle Color", Color = Color3.fromRGB(255,255,255), Flag = "FOV_Color", Callback = function(c) Environment.FOVSettings.Color = c end})
+AimbotTab:CreateSlider({Name = "FOV Size (Radius)", Range = {30, 300}, Increment = 5, CurrentValue = 90, Flag = "FOV_Radius", Callback = function(v) Environment.FOVSettings.Radius = v end})
+AimbotTab:CreateSlider({Name = "Smoothness (0 = instant)", Range = {0,1.5}, Increment = 0.05, CurrentValue = 0, Flag = "Aimbot_Smoothness", Callback = function(v) Environment.Settings.Sensitivity = v end})
+VisualsTab:CreateToggle({Name = "Enable ESP", CurrentValue = false, Flag = "ESP_Enabled", Callback = function(v) ESPSettings.Enabled = v end})
+VisualsTab:CreateToggle({Name = "Boxes", CurrentValue = true, Flag = "ESP_Boxes", Callback = function(v) ESPSettings.Boxes = v end})
+VisualsTab:CreateToggle({Name = "Tracers", CurrentValue = true, Flag = "ESP_Tracers", Callback = function(v) ESPSettings.Tracers = v end})
+VisualsTab:CreateToggle({Name = "Names + HP + Distance", CurrentValue = true, Flag = "ESP_Names", Callback = function(v) ESPSettings.Names = v end})
+VisualsTab:CreateToggle({Name = "Skeleton", CurrentValue = true, Flag = "ESP_Skeleton", Callback = function(v) ESPSettings.Skeleton = v end})
+VisualsTab:CreateToggle({Name = "Health Bars", CurrentValue = true, Flag = "ESP_HealthBars", Callback = function(v) ESPSettings.HealthBars = v end})
+VisualsTab:CreateToggle({Name = "Team Check", CurrentValue = true, Flag = "ESP_TeamCheck", Callback = function(v) ESPSettings.TeamCheck = v end})
+VisualsTab:CreateToggle({Name = "Rainbow Colors", CurrentValue = false, Flag = "ESP_Rainbow", Callback = function(v) ESPSettings.Rainbow = v end})
+VisualsTab:CreateColorPicker({Name = "ESP Color", Color = Color3.fromRGB(0,0,0), Flag = "ESP_Color", Callback = function(c) ESPSettings.Color = c end})
+VisualsTab:CreateSlider({Name = "Line Thickness", Range = {1,5}, Increment = 1, CurrentValue = 2, Flag = "ESP_Thickness", Callback = function(v) ESPSettings.Thickness = v end})
+VisualsTab:CreateSlider({Name = "Text Size", Range = {12,24}, Increment = 1, CurrentValue = 16, Flag = "ESP_TextSize", Callback = function(v) ESPSettings.TextSize = v end})
+SettingsTab:CreateButton({Name = "Save Configuration Now", Callback = function() Rayfield:SaveConfiguration() Rayfield:Notify({Title = "Saved", Content = "Configuration saved manually", Duration = 4}) end})
+SettingsTab:CreateButton({Name = "Load Configuration", Callback = function() Rayfield:LoadConfiguration() Rayfield:Notify({Title = "Loaded", Content = "Configuration loaded", Duration = 4}) end})
+SettingsTab:CreateButton({Name = "Cleanup ESP Only", Callback = function() for p in pairs(ESPObjects) do RemoveESP(p) end Rayfield:Notify({Title = "ESP Cleaned", Content = "All ESP removed", Duration = 3}) end})
+SettingsTab:CreateButton({Name = "Reset Aimbot Only", Callback = function() CancelLock() Environment.Locked = nil Rayfield:Notify({Title = "Aimbot Reset", Content = "Lock cancelled", Duration = 3}) end})
 Rayfield:LoadConfiguration()
-
 print("Owen Xit Hub loaded - Remote key: " .. KeyUrl .. " = " .. CorrectKey)
-Rayfield:Notify({Title = "Welcome!", Content = "Key loaded from remote Pastebin\nFOV 30 = super obvious\nConfiguration now saves and loads", Duration = 8})
+Rayfield:Notify({Title = "Welcome!", Content = "Key loaded from remote Pastebin\nFOV 30 = super obvious\nConfiguration now saves and loads\nAimbot actualizado (Grok Ultimate)", Duration = 8})
