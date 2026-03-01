@@ -230,7 +230,7 @@ local ESPSettings = {
    Color = Color3.fromRGB(0, 0, 0),
    Thickness = 2,
    TextSize = 16,
-   MaxDistance = 300
+   MaxDistance = 1000
 }
 local ESPObjects = {}
 local R15Links = {{"Head","UpperTorso"}, {"UpperTorso","LowerTorso"}, {"LowerTorso","LeftUpperLeg"},{"LeftUpperLeg","LeftLowerLeg"},{"LeftLowerLeg","LeftFoot"}, {"LowerTorso","RightUpperLeg"},{"RightUpperLeg","RightLowerLeg"},{"RightLowerLeg","RightFoot"}, {"UpperTorso","LeftUpperArm"},{"LeftUpperArm","LeftLowerArm"},{"LeftLowerArm","LeftHand"}, {"UpperTorso","RightUpperArm"},{"RightUpperArm","RightLowerArm"},{"RightLowerArm","RightHand"}}
