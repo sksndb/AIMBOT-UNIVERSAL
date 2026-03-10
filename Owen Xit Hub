@@ -3,7 +3,7 @@
 -- Cambia la key editando SOLO ese pastebin, sin tocar este script
  
 local KeySystemEnabled = true
-local KeyUrl = "https://pastebin.com/raw/h7RQseud"
+local KeyUrl = "https://raw.githubusercontent.com/sksndb/Key/refs/heads/main/Key%20Del%20Aimbot%20Universal"
  
 -- Descarga la clave remota (con fallback si falla internet o pastebin)
 local CorrectKey = "fallback_key" -- por si no carga
