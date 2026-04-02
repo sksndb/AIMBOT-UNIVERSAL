@@ -171,7 +171,7 @@ local FrameCounter = 0
 local ESPSettings = {
    Enabled = false, Boxes = true, Tracers = true, Names = true, Skeleton = true, HealthBars = true,
    TeamCheck = true, Rainbow = false, Color = Color3.fromRGB(255, 255, 255),
-   Thickness = 2, TextSize = 16, MaxDistance = 1000
+   Thickness = 2, TextSize = 16, MaxDistance = 500
 }
  
 local ESPObjects = {}
