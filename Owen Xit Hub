@@ -256,10 +256,29 @@ local vis = true
          d.HBBG.Position = Vector2.new(rPos.X + boxW/2 + 6, top.Y) d.HBBG.Size = Vector2.new(4, barH)
          local perc = hum.Health / hum.MaxHealth d.HB.Color = Color3.fromRGB(255*(1-perc), 255*perc, 0) d.HB.Position = Vector2.new(d.HBBG.Position.X + 1.5, d.HBBG.Position.Y + barH*(1-perc)) d.HB.Size = Vector2.new(1, barH*perc)
       end
-      if p1 and p2 then local v1 = Camera:WorldToViewportPoint(p1.Position) local v2 = Camera:WorldToViewportPoint(p2.Position) line.From = Vector2.new(v1.X,v1.Y) line.To = Vector2.new(v2.X,v2.Y) line.Color = skelColor line.Visible = vis and ESPSettings.Skeleton
-      d.Highlight.Adornee = c d.Highlight.FillColor = color d.Highlight.OutlineColor = color d.Highlight.Enabled = vis
+            if d.SkelLines then 
+         for i, line in ipairs(d.SkelLines) do 
+            local pair = d.Links[i] 
+            local p1 = c:FindFirstChild(pair[1]) 
+            local p2 = c:FindFirstChild(pair[2]) 
+            if p1 and p2 then 
+               local v1 = Camera:WorldToViewportPoint(p1.Position) 
+               local v2 = Camera:WorldToViewportPoint(p2.Position) 
+               line.From = Vector2.new(v1.X,v1.Y) 
+               line.To = Vector2.new(v2.X,v2.Y) 
+               line.Color = skelColor 
+               line.Visible = vis and ESPSettings.Skeleton 
+            else 
+               line.Visible = false 
+            end 
+         end 
+      end
+
+      d.Highlight.Adornee = c 
+      d.Highlight.FillColor = color 
+      d.Highlight.OutlineColor = color 
+      d.Highlight.Enabled = vis
    end
-end)
  
 RunService.Heartbeat:Connect(function()
    if not Running or not Env.Settings.Enabled or not Env.Locked then return end
