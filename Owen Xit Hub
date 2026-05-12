@@ -141,7 +141,7 @@ getgenv().ExunysDeveloperAimbot = {
    Settings = {
       Enabled = true, TeamCheck = false, AliveCheck = true, WallCheck = false,
       Sensitivity = 0, Sensitivity2 = 3.5, LockMode = 1, LockPart = "Head",
-      TriggerKey = Enum.UserInputType.MouseButton1, Toggle = false
+      TriggerKey = , Toggle = false
    },
    FOVSettings = {
       Enabled = true, Visible = true, Radius = 90, NumSides = 60, Thickness = 1,
