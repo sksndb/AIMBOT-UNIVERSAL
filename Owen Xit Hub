@@ -1,4 +1,4 @@
--- Owen Xit Hub | Aimbot + ESP (OPTIMIZADO FPS - NO LAG) - CORREGIDO
+-- Owen Xit Hub | Aimbot + ESP (CORREGIDO) - Solo Tracers en Rojo
 local KeySystemEnabled = true
 local KeyUrl = "https://raw.githubusercontent.com/sksndb/Key/refs/heads/main/Key%20Del%20Aimbot%20Universal"
 
@@ -205,7 +205,6 @@ end
 
 RunService.Stepped:Connect(function()
    FrameCounter += 1 if FrameCounter % 3 ~= 0 then return end
-
    local f = Env.FOVSettings local s = Env.Settings local fc = Env.FOVCircle local fo = Env.FOVCircleOutline
    local col = Env.Locked and f.LockedColor or (f.RainbowColor and Color3.fromHSV(tick() % 5, 1, 1) or f.Color)
    if f.Enabled and s.Enabled then
@@ -228,11 +227,11 @@ RunService.Stepped:Connect(function()
       local rPos, onScr = Camera:WorldToViewportPoint(root.Position) if not onScr then d.Box.Visible = false d.Tracer.Visible = false d.Name.Visible = false if d.HBBG then d.HBBG.Visible = false d.HB.Visible = false end for _,l in d.SkelLines do l.Visible = false end d.Highlight.Enabled = false continue end
 
       local color = ESPSettings.Rainbow and Color3.fromHSV((tick()*5 + p.UserId/255)%1,1,1) or ESPSettings.Color
-      local skelColor = (Env.Locked == p) and Color3.fromRGB(255, 0, 0) or color
+      local tracerColor = (Env.Locked == p) and Color3.fromRGB(255, 0, 0) or color   -- ← Solo Tracers en rojo
       local vis = true
 
       if d.Box then d.Box.Visible = vis and ESPSettings.Boxes d.Box.Color = color local top = Camera:WorldToViewportPoint(head.Position + Vector3.new(0,0.5,0)) local bot = Camera:WorldToViewportPoint(root.Position - Vector3.new(0,4,0)) local h = math.abs(top.Y - bot.Y) local w = h*0.4 d.Box.Size = Vector2.new(w,h) d.Box.Position = Vector2.new(rPos.X - w/2, top.Y) end
-      if d.Tracer then d.Tracer.Visible = vis and ESPSettings.Tracers d.Tracer.Color = color d.Tracer.From = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y*0.95) d.Tracer.To = Vector2.new(rPos.X, rPos.Y + 30) end
+      if d.Tracer then d.Tracer.Visible = vis and ESPSettings.Tracers d.Tracer.Color = tracerColor d.Tracer.From = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y*0.95) d.Tracer.To = Vector2.new(rPos.X, rPos.Y + 30) end
       if d.Name then d.Name.Visible = vis and ESPSettings.Names d.Name.Color = color d.Name.Text = p.Name.."\n"..math.floor(hum.Health).." HP | "..math.floor(dist).."u" local hpos = Camera:WorldToViewportPoint(head.Position) d.Name.Position = Vector2.new(rPos.X, hpos.Y - 40) end
       if d.HBBG and d.HB then
          d.HBBG.Visible = vis and ESPSettings.HealthBars d.HB.Visible = vis and ESPSettings.HealthBars
@@ -240,25 +239,7 @@ RunService.Stepped:Connect(function()
          d.HBBG.Position = Vector2.new(rPos.X + boxW/2 + 6, top.Y) d.HBBG.Size = Vector2.new(4, barH)
          local perc = hum.Health / hum.MaxHealth d.HB.Color = Color3.fromRGB(255*(1-perc), 255*perc, 0) d.HB.Position = Vector2.new(d.HBBG.Position.X + 1.5, d.HBBG.Position.Y + barH*(1-perc)) d.HB.Size = Vector2.new(1, barH*perc)
       end
-
-      if d.SkelLines then 
-         for i, line in ipairs(d.SkelLines) do 
-            local pair = d.Links[i] 
-            local p1 = c:FindFirstChild(pair[1]) 
-            local p2 = c:FindFirstChild(pair[2]) 
-            if p1 and p2 then 
-               local v1 = Camera:WorldToViewportPoint(p1.Position) 
-               local v2 = Camera:WorldToViewportPoint(p2.Position) 
-               line.From = Vector2.new(v1.X,v1.Y) 
-               line.To = Vector2.new(v2.X,v2.Y) 
-               line.Color = skelColor 
-               line.Visible = vis and ESPSettings.Skeleton 
-            else 
-               line.Visible = false 
-            end 
-         end 
-      end
-
+      if d.SkelLines then for i, line in ipairs(d.SkelLines) do local pair = d.Links[i] local p1 = c:FindFirstChild(pair[1]) local p2 = c:FindFirstChild(pair[2]) if p1 and p2 then local v1 = Camera:WorldToViewportPoint(p1.Position) local v2 = Camera:WorldToViewportPoint(p2.Position) line.From = Vector2.new(v1.X,v1.Y) line.To = Vector2.new(v2.X,v2.Y) line.Color = color line.Visible = vis and ESPSettings.Skeleton else line.Visible = false end end end
       d.Highlight.Adornee = c d.Highlight.FillColor = color d.Highlight.OutlineColor = color d.Highlight.Enabled = vis
    end
 end)
@@ -296,13 +277,13 @@ UIS.TextBoxFocused:Connect(function() Typing = true end)
 UIS.TextBoxFocusReleased:Connect(function() Typing = false end)
 Players.PlayerRemoving:Connect(RemoveESP)
 
--- INTERFAZ COMPLETA
+-- INTERFAZ
 AimbotTab:CreateToggle({Name = "Enable Aimbot", CurrentValue = true, Flag = "Aimbot_Enabled", Callback = function(v) Env.Settings.Enabled = v end})
 AimbotTab:CreateToggle({Name = "Team Check", CurrentValue = false, Flag = "Aimbot_TeamCheck", Callback = function(v) Env.Settings.TeamCheck = v end})
 AimbotTab:CreateToggle({Name = "Rainbow FOV", CurrentValue = false, Flag = "FOV_Rainbow", Callback = function(v) Env.FOVSettings.RainbowColor = v end})
 AimbotTab:CreateColorPicker({Name = "FOV Circle Color", Color = Color3.fromRGB(255,255,255), Flag = "FOV_Color", Callback = function(c) Env.FOVSettings.Color = c end})
-AimbotTab:CreateSlider({Name = "FOV Size", Range = {1, 100}, Increment = 5, CurrentValue = 90, Flag = "FOV_Radius", Callback = function(v) Env.FOVSettings.Radius = v end})
-AimbotTab:CreateSlider({Name = "Smoothness", Range = {0,1.5}, Increment = 0.05, CurrentValue = 0, Flag = "Aimbot_Smoothness", Callback = function(v) Env.Settings.Sensitivity = v end})
+AimbotTab:CreateSlider({Name = "FOV Size (1 = SUPER DESCARADO)", Range = {1, 100}, Increment = 5, CurrentValue = 90, Flag = "FOV_Radius", Callback = function(v) Env.FOVSettings.Radius = v end})
+AimbotTab:CreateSlider({Name = "Smoothness (0 = instant)", Range = {0,1.5}, Increment = 0.05, CurrentValue = 0, Flag = "Aimbot_Smoothness", Callback = function(v) Env.Settings.Sensitivity = v end})
 
 VisualsTab:CreateToggle({Name = "Enable ESP", CurrentValue = false, Flag = "ESP_Enabled", Callback = function(v) ESPSettings.Enabled = v end})
 VisualsTab:CreateToggle({Name = "Boxes", CurrentValue = true, Flag = "ESP_Boxes", Callback = function(v) ESPSettings.Boxes = v end})
@@ -316,9 +297,8 @@ VisualsTab:CreateColorPicker({Name = "ESP Color", Color = Color3.fromRGB(255,0,2
 VisualsTab:CreateSlider({Name = "Line Thickness", Range = {1,5}, Increment = 1, CurrentValue = 2, Flag = "ESP_Thickness", Callback = function(v) ESPSettings.Thickness = v end})
 VisualsTab:CreateSlider({Name = "Text Size", Range = {12,24}, Increment = 1, CurrentValue = 16, Flag = "ESP_TextSize", Callback = function(v) ESPSettings.TextSize = v end})
 
-SettingsTab:CreateButton({Name = "Guardar Configuración Ahora", Callback = function() Rayfield:SaveConfiguration() end})
+SettingsTab:CreateButton({Name = "Guardar Configuración Ahora", Callback = function() Rayfield:SaveConfiguration() Rayfield:Notify({Title = "Guardado", Content = "Configuración guardada", Duration = 4}) end})
 SettingsTab:CreateButton({Name = "Cargar Configuración", Callback = function() Rayfield:LoadConfiguration() end})
-SettingsTab:CreateButton({Name = "Cleanup ESP Only", Callback = function() for p in pairs(ESPObjects) do RemoveESP(p) end end})
 
 Rayfield:LoadConfiguration()
-print("✅ Owen Xit Hub cargado correctamente | Tecla Z | Skeleton rojo activado")
+print("✅ Owen Xit Hub cargado - Tracers rojos cuando aimbot locked")
