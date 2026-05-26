@@ -317,4 +317,16 @@ SettingsTab:CreateButton({Name = "Guardar Configuración Ahora", Callback = func
 SettingsTab:CreateButton({Name = "Cargar Configuración", Callback = function() Rayfield:LoadConfiguration() end})
 
 Rayfield:LoadConfiguration()
+
+-- Cargar la tecla guardada
+task.spawn(function()
+    wait(1) -- Espera a que cargue la config
+    local savedKey = Rayfield.Flags.Aimbot_TriggerKey
+    if savedKey and savedKey.CurrentOption and savedKey.CurrentOption[1] then
+        local keyName = savedKey.CurrentOption[1]
+        CurrentTriggerKey = KeyOptions[keyName] or Enum.KeyCode.Z
+        print("Tecla cargada: " .. keyName)
+    end
+end)
+
 print("✅ Owen Xit Hub cargado con selector de tecla")
