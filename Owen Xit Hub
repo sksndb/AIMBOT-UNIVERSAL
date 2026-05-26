@@ -109,7 +109,7 @@ local AimbotTab = Window:CreateTab("🎯 Aimbot", 4483362458)
 local VisualsTab = Window:CreateTab("🎨 Visuals", 4483362458)
 local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362456)
 
--- ==================== SELECTOR DE TECLA ====================
+-- ==================== SELECTOR DE TECLA (Con Guardado) ====================
 local CurrentTriggerKey = Enum.KeyCode.Z
 
 local KeyOptions = {
@@ -121,6 +121,19 @@ local KeyOptions = {
     ["Clic Izquierdo"] = Enum.UserInputType.MouseButton1,
     ["Clic Derecho"] = Enum.UserInputType.MouseButton2
 }
+
+AimbotTab:CreateDropdown({
+    Name = "Tecla de Activación del Aimbot",
+    Options = {"T", "Q", "E", "Z", "X", "Clic Izquierdo", "Clic Derecho"},
+    CurrentOption = {"Z"},
+    MultipleOptions = false,
+    Flag = "Aimbot_TriggerKey",     -- ← Esto es lo importante para guardar
+    Callback = function(selected)
+        local keyName = selected[1]
+        CurrentTriggerKey = KeyOptions[keyName]
+        Rayfield:Notify({Title = "Tecla Cambiada", Content = "Aimbot ahora usa: " .. keyName, Duration = 4})
+    end
+})
 
 AimbotTab:CreateDropdown({
     Name = "Tecla de Activación del Aimbot",
