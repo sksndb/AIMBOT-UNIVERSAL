@@ -275,18 +275,19 @@ RunService.Heartbeat:Connect(function()
    end
 end)
 UIS.InputBegan:Connect(function(input)
-   if Typing then return end 
+   if Typing then return end
    if input.UserInputType == CurrentTriggerKey or input.KeyCode == CurrentTriggerKey then
       if Env.Settings.Toggle then Running = not Running else Running = true end
       if Running then Env.Locked = GetClosestPlayer() else if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end Env.Locked = nil end
    end
 end)
+
 UIS.InputEnded:Connect(function(input)
-   if Env.Settings.Toggle or Typing then return end 
-   if input.UserInputType == CurrentTriggerKey or input.KeyCode == CurrentTriggerKey then 
-      Running = false 
-      if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end 
-      Env.Locked = nil 
+   if Env.Settings.Toggle or Typing then return end
+   if input.UserInputType == CurrentTriggerKey or input.KeyCode == CurrentTriggerKey then
+      Running = false
+      if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end
+      Env.Locked = nil
    end
 end)
 UIS.TextBoxFocused:Connect(function() Typing = true end)
@@ -318,14 +319,13 @@ SettingsTab:CreateButton({Name = "Cargar Configuración", Callback = function() 
 
 Rayfield:LoadConfiguration()
 
--- Cargar la tecla guardada
+-- Cargar tecla guardada
 task.spawn(function()
-    wait(1) -- Espera a que cargue la config
-    local savedKey = Rayfield.Flags.Aimbot_TriggerKey
-    if savedKey and savedKey.CurrentOption and savedKey.CurrentOption[1] then
-        local keyName = savedKey.CurrentOption[1]
+    wait(1.5)
+    local saved = Rayfield.Flags.Aimbot_TriggerKey
+    if saved and saved.CurrentOption and saved.CurrentOption[1] then
+        local keyName = saved.CurrentOption[1]
         CurrentTriggerKey = KeyOptions[keyName] or Enum.KeyCode.Z
-        print("Tecla cargada: " .. keyName)
     end
 end)
 
