@@ -1,7 +1,6 @@
--- Owen Xit Hub | Aimbot + ESP (CORREGIDO) - Solo Tracers en Rojo
+-- Owen Xit Hub | Aimbot + ESP (Solo Tracers en Rojo) - Con Selector de Tecla
 local KeySystemEnabled = true
 local KeyUrl = "https://raw.githubusercontent.com/sksndb/Key/refs/heads/main/Key%20Del%20Aimbot%20Universal"
-
 local CorrectKey = "fallback_key"
 pcall(function()
     local response = game:HttpGet(KeyUrl, true)
@@ -9,7 +8,6 @@ pcall(function()
         CorrectKey = response:match("^%s*(.-)%s*$") or CorrectKey
     end
 end)
-
 local KeyFile = "owen_xit_key.txt"
 local function LoadSavedKey()
     if isfile and isfile(KeyFile) then
@@ -19,9 +17,10 @@ local function LoadSavedKey()
     return nil
 end
 local function SaveKey(key)
-    if writefile then writefile(KeyFile, key) end
+    if writefile then
+        writefile(KeyFile, key)
+    end
 end
-
 local savedKey = LoadSavedKey()
 if KeySystemEnabled and savedKey ~= CorrectKey then
     local entered = false
@@ -71,7 +70,6 @@ if KeySystemEnabled and savedKey ~= CorrectKey then
     Status.TextSize = 16
     Status.Font = Enum.Font.SourceSans
     Status.Parent = Frame
-
     local function CheckKey(keyInput)
         if keyInput == CorrectKey then
             SaveKey(keyInput)
@@ -85,19 +83,16 @@ if KeySystemEnabled and savedKey ~= CorrectKey then
             InputBox.Text = ""
         end
     end
-
     InputBox.FocusLost:Connect(function(enterPressed)
         if enterPressed then CheckKey(InputBox.Text) end
     end)
     SubmitButton.MouseButton1Click:Connect(function()
         CheckKey(InputBox.Text)
     end)
-
     repeat task.wait() until entered or not ScreenGui.Parent
     if not entered then return end
 end
 
--- SCRIPT PRINCIPAL
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
    Name = "Owen Xit Hub",
@@ -110,10 +105,34 @@ local Window = Rayfield:CreateWindow({
    },
    KeySystem = false
 })
-
 local AimbotTab = Window:CreateTab("🎯 Aimbot", 4483362458)
 local VisualsTab = Window:CreateTab("🎨 Visuals", 4483362458)
 local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362456)
+
+-- ==================== SELECTOR DE TECLA ====================
+local CurrentTriggerKey = Enum.KeyCode.Z
+
+local KeyOptions = {
+    ["T"] = Enum.KeyCode.T,
+    ["Q"] = Enum.KeyCode.Q,
+    ["E"] = Enum.KeyCode.E,
+    ["Z"] = Enum.KeyCode.Z,
+    ["X"] = Enum.KeyCode.X,
+    ["Clic Izquierdo"] = Enum.UserInputType.MouseButton1,
+    ["Clic Derecho"] = Enum.UserInputType.MouseButton2
+}
+
+AimbotTab:CreateDropdown({
+    Name = "Tecla de Activación del Aimbot",
+    Options = {"T", "Q", "E", "Z", "X", "Clic Izquierdo", "Clic Derecho"},
+    CurrentOption = {"Z"},
+    MultipleOptions = false,
+    Callback = function(selected)
+        local keyName = selected[1]
+        CurrentTriggerKey = KeyOptions[keyName]
+        Rayfield:Notify({Title = "Tecla Cambiada", Content = "Aimbot ahora usa: " .. keyName, Duration = 4})
+    end
+})
 
 getgenv().ExunysDeveloperAimbot = {
    DeveloperSettings = {RainbowSpeed = 1},
@@ -132,7 +151,6 @@ getgenv().ExunysDeveloperAimbot = {
    FOVCircleOutline = Drawing.new("Circle"),
    FOVCircle = Drawing.new("Circle")
 }
-
 local Env = getgenv().ExunysDeveloperAimbot
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -140,23 +158,18 @@ local UIS = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local LP = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
-
 Env.FOVCircle.Visible = false
 Env.FOVCircleOutline.Visible = false
-
 local RequiredDistance, Typing, Running, CurrentTween = 2000, false, false, nil
 local FrameCounter = 0
-
 local ESPSettings = {
    Enabled = false, Boxes = true, Tracers = true, Names = true, Skeleton = true, HealthBars = true,
    TeamCheck = true, Rainbow = false, Color = Color3.fromRGB(255, 255, 255),
    Thickness = 2, TextSize = 16, MaxDistance = 500
 }
-
 local ESPObjects = {}
 local R15Links = {{"Head","UpperTorso"}, {"UpperTorso","LowerTorso"}, {"LowerTorso","LeftUpperLeg"},{"LeftUpperLeg","LeftLowerLeg"},{"LeftLowerLeg","LeftFoot"}, {"LowerTorso","RightUpperLeg"},{"RightUpperLeg","RightLowerLeg"},{"RightLowerLeg","RightFoot"}, {"UpperTorso","LeftUpperArm"},{"LeftUpperArm","LeftLowerArm"},{"LeftLowerArm","LeftHand"}, {"UpperTorso","RightUpperArm"},{"RightUpperArm","RightLowerArm"},{"RightLowerArm","RightHand"}}
 local R6Links = {{"Head","Torso"}, {"Torso","Left Arm"}, {"Torso","Right Arm"}, {"Torso","Left Leg"}, {"Torso","Right Leg"}}
-
 local function CreateESP(p)
    if ESPObjects[p] then return end
    local char = p.Character or p.CharacterAdded:Wait()
@@ -174,7 +187,6 @@ local function CreateESP(p)
    data.Highlight = Instance.new("Highlight") data.Highlight.FillTransparency = 0.4 data.Highlight.OutlineTransparency = 0 data.Highlight.Parent = Camera
    ESPObjects[p] = data
 end
-
 local function RemoveESP(p)
    local d = ESPObjects[p] if not d then return end
    if d.Box then d.Box:Remove() end if d.Tracer then d.Tracer:Remove() end if d.Name then d.Name:Remove() end
@@ -182,7 +194,6 @@ local function RemoveESP(p)
    for _, l in ipairs(d.SkelLines or {}) do l:Remove() end if d.Highlight then d.Highlight:Destroy() end
    ESPObjects[p] = nil
 end
-
 local function GetClosestPlayer()
    local s = Env.Settings local visRad = Env.FOVSettings.Radius local intRad = 330 - visRad RequiredDistance = Env.FOVSettings.Enabled and intRad or 2000
    local Closest, dist = nil, RequiredDistance
@@ -202,7 +213,6 @@ local function GetClosestPlayer()
    end
    return Closest
 end
-
 RunService.Stepped:Connect(function()
    FrameCounter += 1 if FrameCounter % 3 ~= 0 then return end
    local f = Env.FOVSettings local s = Env.Settings local fc = Env.FOVCircle local fo = Env.FOVCircleOutline
@@ -211,25 +221,18 @@ RunService.Stepped:Connect(function()
       fc.Radius = f.Radius fc.NumSides = f.NumSides fc.Thickness = f.Thickness fc.Transparency = f.Transparency fc.Filled = f.Filled fc.Visible = f.Visible fc.Position = UIS:GetMouseLocation() fc.Color = col
       fo.Radius = f.Radius + f.Thickness fo.NumSides = f.NumSides fo.Thickness = f.Thickness + 1 fo.Transparency = f.Transparency fo.Visible = f.Visible fo.Position = UIS:GetMouseLocation() fo.Color = f.RainbowOutlineColor and Color3.fromHSV(tick() % 5, 1, 1) or f.OutlineColor
    else fc.Visible = false fo.Visible = false end
-
    if not ESPSettings.Enabled then return end
-
    for _, p in Players:GetPlayers() do
       if p == LP then continue end local c = p.Character local root = c and c:FindFirstChild("HumanoidRootPart") local hum = c and c:FindFirstChild("Humanoid") local head = c and c:FindFirstChild("Head")
       if not (root and hum and head and hum.Health > 0) then RemoveESP(p) continue end
-
       local dist = (LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") and (LP.Character.HumanoidRootPart.Position - root.Position).Magnitude) or 9999
       if dist > ESPSettings.MaxDistance then RemoveESP(p) continue end
       if ESPSettings.TeamCheck and p.Team == LP.Team then RemoveESP(p) continue end
-
       if not ESPObjects[p] then CreateESP(p) end local d = ESPObjects[p]
-
       local rPos, onScr = Camera:WorldToViewportPoint(root.Position) if not onScr then d.Box.Visible = false d.Tracer.Visible = false d.Name.Visible = false if d.HBBG then d.HBBG.Visible = false d.HB.Visible = false end for _,l in d.SkelLines do l.Visible = false end d.Highlight.Enabled = false continue end
-
       local color = ESPSettings.Rainbow and Color3.fromHSV((tick()*5 + p.UserId/255)%1,1,1) or ESPSettings.Color
-      local tracerColor = (Env.Locked == p) and Color3.fromRGB(255, 0, 0) or color   -- ← Solo Tracers en rojo
+      local tracerColor = (Env.Locked == p) and Color3.fromRGB(255, 0, 0) or color
       local vis = true
-
       if d.Box then d.Box.Visible = vis and ESPSettings.Boxes d.Box.Color = color local top = Camera:WorldToViewportPoint(head.Position + Vector3.new(0,0.5,0)) local bot = Camera:WorldToViewportPoint(root.Position - Vector3.new(0,4,0)) local h = math.abs(top.Y - bot.Y) local w = h*0.4 d.Box.Size = Vector2.new(w,h) d.Box.Position = Vector2.new(rPos.X - w/2, top.Y) end
       if d.Tracer then d.Tracer.Visible = vis and ESPSettings.Tracers d.Tracer.Color = tracerColor d.Tracer.From = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y*0.95) d.Tracer.To = Vector2.new(rPos.X, rPos.Y + 30) end
       if d.Name then d.Name.Visible = vis and ESPSettings.Names d.Name.Color = color d.Name.Text = p.Name.."\n"..math.floor(hum.Health).." HP | "..math.floor(dist).."u" local hpos = Camera:WorldToViewportPoint(head.Position) d.Name.Position = Vector2.new(rPos.X, hpos.Y - 40) end
@@ -243,7 +246,6 @@ RunService.Stepped:Connect(function()
       d.Highlight.Adornee = c d.Highlight.FillColor = color d.Highlight.OutlineColor = color d.Highlight.Enabled = vis
    end
 end)
-
 RunService.Heartbeat:Connect(function()
    if not Running or not Env.Settings.Enabled or not Env.Locked then return end
    local char = Env.Locked.Character local part = char and char:FindFirstChild(Env.Settings.LockPart)
@@ -259,25 +261,26 @@ RunService.Heartbeat:Connect(function()
       else Camera.CFrame = CFrame.new(Camera.CFrame.Position, target) end
    end
 end)
-
 UIS.InputBegan:Connect(function(input)
-   if Typing then return end local trig = Env.Settings.TriggerKey
-   if input.UserInputType == trig or input.KeyCode == trig then
+   if Typing then return end 
+   if input.UserInputType == CurrentTriggerKey or input.KeyCode == CurrentTriggerKey then
       if Env.Settings.Toggle then Running = not Running else Running = true end
       if Running then Env.Locked = GetClosestPlayer() else if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end Env.Locked = nil end
    end
 end)
-
 UIS.InputEnded:Connect(function(input)
-   if Env.Settings.Toggle or Typing then return end local trig = Env.Settings.TriggerKey
-   if input.UserInputType == trig or input.KeyCode == trig then Running = false if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end Env.Locked = nil end
+   if Env.Settings.Toggle or Typing then return end 
+   if input.UserInputType == CurrentTriggerKey or input.KeyCode == CurrentTriggerKey then 
+      Running = false 
+      if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end 
+      Env.Locked = nil 
+   end
 end)
-
 UIS.TextBoxFocused:Connect(function() Typing = true end)
 UIS.TextBoxFocusReleased:Connect(function() Typing = false end)
 Players.PlayerRemoving:Connect(RemoveESP)
 
--- INTERFAZ
+-- INTERFAZ COMPLETA
 AimbotTab:CreateToggle({Name = "Enable Aimbot", CurrentValue = true, Flag = "Aimbot_Enabled", Callback = function(v) Env.Settings.Enabled = v end})
 AimbotTab:CreateToggle({Name = "Team Check", CurrentValue = false, Flag = "Aimbot_TeamCheck", Callback = function(v) Env.Settings.TeamCheck = v end})
 AimbotTab:CreateToggle({Name = "Rainbow FOV", CurrentValue = false, Flag = "FOV_Rainbow", Callback = function(v) Env.FOVSettings.RainbowColor = v end})
@@ -297,8 +300,8 @@ VisualsTab:CreateColorPicker({Name = "ESP Color", Color = Color3.fromRGB(255,0,2
 VisualsTab:CreateSlider({Name = "Line Thickness", Range = {1,5}, Increment = 1, CurrentValue = 2, Flag = "ESP_Thickness", Callback = function(v) ESPSettings.Thickness = v end})
 VisualsTab:CreateSlider({Name = "Text Size", Range = {12,24}, Increment = 1, CurrentValue = 16, Flag = "ESP_TextSize", Callback = function(v) ESPSettings.TextSize = v end})
 
-SettingsTab:CreateButton({Name = "Guardar Configuración Ahora", Callback = function() Rayfield:SaveConfiguration() Rayfield:Notify({Title = "Guardado", Content = "Configuración guardada", Duration = 4}) end})
+SettingsTab:CreateButton({Name = "Guardar Configuración Ahora", Callback = function() Rayfield:SaveConfiguration() end})
 SettingsTab:CreateButton({Name = "Cargar Configuración", Callback = function() Rayfield:LoadConfiguration() end})
 
 Rayfield:LoadConfiguration()
-print("✅ Owen Xit Hub cargado - Tracers rojos cuando aimbot locked")
+print("✅ Owen Xit Hub cargado con selector de tecla")
