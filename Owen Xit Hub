@@ -135,18 +135,6 @@ AimbotTab:CreateDropdown({
     end
 })
 
-AimbotTab:CreateDropdown({
-    Name = "Tecla de Activación del Aimbot",
-    Options = {"T", "Q", "E", "Z", "X", "Clic Izquierdo", "Clic Derecho"},
-    CurrentOption = {"Z"},
-    MultipleOptions = false,
-    Callback = function(selected)
-        local keyName = selected[1]
-        CurrentTriggerKey = KeyOptions[keyName]
-        Rayfield:Notify({Title = "Tecla Cambiada", Content = "Aimbot ahora usa: " .. keyName, Duration = 4})
-    end
-})
-
 getgenv().ExunysDeveloperAimbot = {
    DeveloperSettings = {RainbowSpeed = 1},
    Settings = {
