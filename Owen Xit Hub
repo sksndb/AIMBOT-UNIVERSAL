@@ -307,13 +307,16 @@ SettingsTab:CreateButton({Name = "Cargar Configuración", Callback = function() 
 
 Rayfield:LoadConfiguration()
 
--- Cargar tecla guardada
+Rayfield:LoadConfiguration()
+
+-- Cargar tecla guardada correctamente
 task.spawn(function()
-    wait(1.5)
-    local saved = Rayfield.Flags.Aimbot_TriggerKey
-    if saved and saved.CurrentOption and saved.CurrentOption[1] then
-        local keyName = saved.CurrentOption[1]
+    task.wait(2) -- Esperamos un poco más para que Rayfield cargue todo
+    local savedFlag = Rayfield.Flags.Aimbot_TriggerKey
+    if savedFlag and savedFlag.CurrentOption and #savedFlag.CurrentOption > 0 then
+        local keyName = savedFlag.CurrentOption[1]
         CurrentTriggerKey = KeyOptions[keyName] or Enum.KeyCode.Z
+        print("Tecla cargada desde config: " .. keyName)
     end
 end)
 
