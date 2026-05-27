@@ -92,7 +92,6 @@ if KeySystemEnabled and savedKey ~= CorrectKey then
     repeat task.wait() until entered or not ScreenGui.Parent
     if not entered then return end
 end
-
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
    Name = "Owen Xit Hub",
@@ -108,7 +107,6 @@ local Window = Rayfield:CreateWindow({
 local AimbotTab = Window:CreateTab("🎯 Aimbot", 4483362458)
 local VisualsTab = Window:CreateTab("🎨 Visuals", 4483362458)
 local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362456)
-
 -- ==================== SELECTOR DE TECLA (Con Guardado) ====================
 local CurrentTriggerKey = Enum.KeyCode.Z
 local KeyOptions = {
@@ -120,7 +118,6 @@ local KeyOptions = {
     ["Clic Izquierdo"] = Enum.UserInputType.MouseButton1,
     ["Clic Derecho"] = Enum.UserInputType.MouseButton2
 }
-
 AimbotTab:CreateDropdown({
     Name = "Tecla de Activación del Aimbot",
     Options = {"T", "Q", "E", "Z", "X", "Clic Izquierdo", "Clic Derecho"},
@@ -133,13 +130,12 @@ AimbotTab:CreateDropdown({
         Rayfield:Notify({Title = "Tecla Cambiada", Content = "Aimbot ahora usa: " .. keyName, Duration = 4})
     end
 })
-
 getgenv().ExunysDeveloperAimbot = {
    DeveloperSettings = {RainbowSpeed = 1},
    Settings = {
       Enabled = true, TeamCheck = false, AliveCheck = true, WallCheck = false,
       Sensitivity = 0, Sensitivity2 = 3.5, LockMode = 1, LockPart = "Head",
-      TriggerKey = Enum.KeyCode.Z, Toggle = true
+      TriggerKey = Enum.KeyCode.Z, Toggle = false   -- Para que por defecto sea "Mantener Presionado"
    },
    FOVSettings = {
       Enabled = true, Visible = true, Radius = 90, NumSides = 60, Thickness = 1,
@@ -162,7 +158,7 @@ Env.FOVCircle.Visible = false
 Env.FOVCircleOutline.Visible = false
 local RequiredDistance, Typing, Running, CurrentTween = 2000, false, false, nil
 local FrameCounter = 0
-local StreamingMode = false   -- Modo Streaming
+local StreamingMode = false -- Modo Streaming
 local ESPSettings = {
    Enabled = false, Boxes = true, Tracers = true, Names = true, Skeleton = true, HealthBars = true,
    TeamCheck = true, Rainbow = false, Color = Color3.fromRGB(255, 255, 255),
@@ -228,30 +224,107 @@ RunService.Stepped:Connect(function()
       if not (root and hum and head and hum.Health > 0) then RemoveESP(p) continue end
       local dist = (LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") and (LP.Character.HumanoidRootPart.Position - root.Position).Magnitude) or 9999
       if dist > ESPSettings.MaxDistance then RemoveESP(p) continue end
-      if ESPSettings.TeamCheck and p.Team == LP.Team then RemoveESP(p) continue end
-      if not ESPObjects[p] then CreateESP(p) end local d = ESPObjects[p]
-      local rPos, onScr = Camera:WorldToViewportPoint(root.Position) if not onScr then d.Box.Visible = false d.Tracer.Visible = false d.Name.Visible = false if d.HBBG then d.HBBG.Visible = false d.HB.Visible = false end for _,l in d.SkelLines do l.Visible = false end d.Highlight.Enabled = false continue end
-      local color = ESPSettings.Rainbow and Color3.fromHSV((tick()*5 + p.UserId/255)%1,1,1) or ESPSettings.Color
-      local tracerColor = (Env.Locked == p) and Color3.fromRGB(255, 0, 0) or color
-      local vis = true
-      if d.Box then d.Box.Visible = vis and ESPSettings.Boxes d.Box.Color = color local top = Camera:WorldToViewportPoint(head.Position + Vector3.new(0,0.5,0)) local bot = Camera:WorldToViewportPoint(root.Position - Vector3.new(0,4,0)) local h = math.abs(top.Y - bot.Y) local w = h*0.4 d.Box.Size = Vector2.new(w,h) d.Box.Position = Vector2.new(rPos.X - w/2, top.Y) end
-      if d.Tracer then d.Tracer.Visible = vis and ESPSettings.Tracers d.Tracer.Color = tracerColor d.Tracer.From = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y*0.95) d.Tracer.To = Vector2.new(rPos.X, rPos.Y + 30) end
-      if d.Name then d.Name.Visible = vis and ESPSettings.Names d.Name.Color = color d.Name.Text = p.Name.."\n"..math.floor(hum.Health).." HP | "..math.floor(dist).."u" local hpos = Camera:WorldToViewportPoint(head.Position) d.Name.Position = Vector2.new(rPos.X, hpos.Y - 40) end
-      if d.HBBG and d.HB then
-         d.HBBG.Visible = vis and ESPSettings.HealthBars d.HB.Visible = vis and ESPSettings.HealthBars
-         local top = Camera:WorldToViewportPoint(head.Position) local bot = Camera:WorldToViewportPoint(root.Position - Vector3.new(0,4,0)) local barH = math.abs(top.Y - bot.Y) local boxW = d.Box and d.Box.Size.X or 50
-         d.HBBG.Position = Vector2.new(rPos.X + boxW/2 + 6, top.Y) d.HBBG.Size = Vector2.new(4, barH)
-         local perc = hum.Health / hum.MaxHealth d.HB.Color = Color3.fromRGB(255*(1-perc), 255*perc, 0) d.HB.Position = Vector2.new(d.HBBG.Position.X + 1.5, d.HBBG.Position.Y + barH*(1-perc)) d.HB.Size = Vector2.new(1, barH*perc)
+                  if ESPSettings.TeamCheck and p.Team == LP.Team then RemoveESP(p) continue end
+      if not ESPObjects[p] then CreateESP(p) end
+      local d = ESPObjects[p]
+      local rPos, onScr = Camera:WorldToViewportPoint(root.Position)
+      if not onScr then
+         d.Box.Visible = false
+         d.Tracer.Visible = false
+         d.Name.Visible = false
+         if d.HBBG then d.HBBG.Visible = false d.HB.Visible = false end
+         for _,l in d.SkelLines do l.Visible = false end
+         d.Highlight.Enabled = false
+         continue
       end
-      if d.SkelLines then for i, line in ipairs(d.SkelLines) do local pair = d.Links[i] local p1 = c:FindFirstChild(pair[1]) local p2 = c:FindFirstChild(pair[2]) if p1 and p2 then local v1 = Camera:WorldToViewportPoint(p1.Position) local v2 = Camera:WorldToViewportPoint(p2.Position) line.From = Vector2.new(v1.X,v1.Y) line.To = Vector2.new(v2.X,v2.Y) line.Color = color line.Visible = vis and ESPSettings.Skeleton else line.Visible = false end end end
-      d.Highlight.Adornee = c d.Highlight.FillColor = color d.Highlight.OutlineColor = color d.Highlight.Enabled = vis
+      -- === MODO STREAMING ===
+      if StreamingMode then
+         -- Oculta solo para los demás (tú sigues viendo tu ESP)
+         d.Box.Visible = false
+         d.Tracer.Visible = false
+         d.Name.Visible = false
+         if d.HBBG then d.HBBG.Visible = false d.HB.Visible = false end
+         for _,l in d.SkelLines do l.Visible = false end
+         d.Highlight.Enabled = false
+      else
+         local color = ESPSettings.Rainbow and Color3.fromHSV((tick()*5 + p.UserId/255)%1,1,1) or ESPSettings.Color
+         local tracerColor = (Env.Locked == p) and Color3.fromRGB(255, 0, 0) or color
+         local vis = true
+         -- (el resto del código de dibujo se mantiene igual)
+         if d.Box then
+            d.Box.Visible = vis and ESPSettings.Boxes
+            d.Box.Color = color
+            local top = Camera:WorldToViewportPoint(head.Position + Vector3.new(0,0.5,0))
+            local bot = Camera:WorldToViewportPoint(root.Position - Vector3.new(0,4,0))
+            local h = math.abs(top.Y - bot.Y)
+            local w = h*0.4
+            d.Box.Size = Vector2.new(w,h)
+            d.Box.Position = Vector2.new(rPos.X - w/2, top.Y)
+         end
+         if d.Tracer then
+            d.Tracer.Visible = vis and ESPSettings.Tracers
+            d.Tracer.Color = tracerColor
+            d.Tracer.From = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y*0.95)
+            d.Tracer.To = Vector2.new(rPos.X, rPos.Y + 30)
+         end
+         if d.Name then
+            d.Name.Visible = vis and ESPSettings.Names
+            d.Name.Color = color
+            d.Name.Text = p.Name.."\n"..math.floor(hum.Health).." HP | "..math.floor(dist).."u"
+            local hpos = Camera:WorldToViewportPoint(head.Position)
+            d.Name.Position = Vector2.new(rPos.X, hpos.Y - 40)
+         end
+         if d.HBBG and d.HB then
+            d.HBBG.Visible = vis and ESPSettings.HealthBars
+            d.HB.Visible = vis and ESPSettings.HealthBars
+            local top = Camera:WorldToViewportPoint(head.Position)
+            local bot = Camera:WorldToViewportPoint(root.Position - Vector3.new(0,4,0))
+            local barH = math.abs(top.Y - bot.Y)
+            local boxW = d.Box and d.Box.Size.X or 50
+            d.HBBG.Position = Vector2.new(rPos.X + boxW/2 + 6, top.Y)
+            d.HBBG.Size = Vector2.new(4, barH)
+            local perc = hum.Health / hum.MaxHealth
+            d.HB.Color = Color3.fromRGB(255*(1-perc), 255*perc, 0)
+            d.HB.Position = Vector2.new(d.HBBG.Position.X + 1.5, d.HBBG.Position.Y + barH*(1-perc))
+            d.HB.Size = Vector2.new(1, barH*perc)
+         end
+         if d.SkelLines then
+            for i, line in ipairs(d.SkelLines) do
+               local pair = d.Links[i]
+               local p1 = c:FindFirstChild(pair[1])
+               local p2 = c:FindFirstChild(pair[2])
+               if p1 and p2 then
+                  local v1 = Camera:WorldToViewportPoint(p1.Position)
+                  local v2 = Camera:WorldToViewportPoint(p2.Position)
+                  line.From = Vector2.new(v1.X,v1.Y)
+                  line.To = Vector2.new(v2.X,v2.Y)
+                  line.Color = color
+                  line.Visible = vis and ESPSettings.Skeleton
+               else
+                  line.Visible = false
+               end
+            end
+         end
+         d.Highlight.Adornee = c
+         d.Highlight.FillColor = color
+         d.Highlight.OutlineColor = color
+         d.Highlight.Enabled = vis
+      end
    end
 end)
+     
 RunService.Heartbeat:Connect(function()
    if not Running or not Env.Settings.Enabled or not Env.Locked then return end
-   local char = Env.Locked.Character local part = char and char:FindFirstChild(Env.Settings.LockPart)
-   if not part then if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end Env.Locked = nil Running = false return end
-   local target = part.Position local scr = Camera:WorldToViewportPoint(target)
+   local char = Env.Locked.Character
+   local part = char and char:FindFirstChild(Env.Settings.LockPart)
+   if not part then
+      if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end
+      Env.Locked = nil
+      Running = false
+      return
+   end
+   local target = part.Position
+   local scr = Camera:WorldToViewportPoint(target)
    if Env.Settings.LockMode == 2 then
       mousemoverel((scr.X - UIS:GetMouseLocation().X)/Env.Settings.Sensitivity2, (scr.Y - UIS:GetMouseLocation().Y)/Env.Settings.Sensitivity2)
    else
@@ -259,37 +332,79 @@ RunService.Heartbeat:Connect(function()
          if CurrentTween then CurrentTween:Cancel() end
          CurrentTween = TweenService:Create(Camera, TweenInfo.new(Env.Settings.Sensitivity, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {CFrame = CFrame.new(Camera.CFrame.Position, target)})
          CurrentTween:Play()
-      else Camera.CFrame = CFrame.new(Camera.CFrame.Position, target) end
+      else
+         Camera.CFrame = CFrame.new(Camera.CFrame.Position, target)
+      end
    end
 end)
+
+-- ==================== CONTROL DE AIMBOT (Hold / Toggle) ====================
 UIS.InputBegan:Connect(function(input)
-   if Typing then return end
-   if input.UserInputType == CurrentTriggerKey or input.KeyCode == CurrentTriggerKey then
-      if Env.Settings.Toggle then Running = not Running else Running = true end
-      if Running then Env.Locked = GetClosestPlayer() else if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end Env.Locked = nil end
-   end
+    if Typing then return end
+    if input.UserInputType == CurrentTriggerKey or input.KeyCode == CurrentTriggerKey then
+        if Env.Settings.Toggle then
+            Running = not Running
+        else
+            Running = true
+        end
+
+        if Running then
+            Env.Locked = GetClosestPlayer()
+        else
+            if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end
+            Env.Locked = nil
+        end
+    end
 end)
 
 UIS.InputEnded:Connect(function(input)
-   if Env.Settings.Toggle or Typing then return end
-   if input.UserInputType == CurrentTriggerKey or input.KeyCode == CurrentTriggerKey then
-      Running = false
-      if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end
-      Env.Locked = nil
-   end
+    if Typing or Env.Settings.Toggle then return end
+    if input.UserInputType == CurrentTriggerKey or input.KeyCode == CurrentTriggerKey then
+        Running = false
+        if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end
+        Env.Locked = nil
+    end
 end)
-UIS.TextBoxFocused:Connect(function() Typing = true end)
-UIS.TextBoxFocusReleased:Connect(function() Typing = false end)
-Players.PlayerRemoving:Connect(RemoveESP)
 
--- INTERFAZ COMPLETA
-AimbotTab:CreateToggle({Name = "Enable Aimbot", CurrentValue = true, Flag = "Aimbot_Enabled", Callback = function(v) Env.Settings.Enabled = v end})
+-- ==================== AIMBOT SETTINGS ====================
+AimbotTab:CreateToggle({
+    Name = "Enable Aimbot",
+    CurrentValue = true,
+    Flag = "Aimbot_Enabled",
+    Callback = function(v) 
+        Env.Settings.Enabled = v 
+    end
+})
+
+AimbotTab:CreateDropdown({
+    Name = "Parte del Cuerpo",
+    Options = {"Head", "UpperTorso"},
+    CurrentOption = {"Head"},
+    MultipleOptions = false,
+    Flag = "Aimbot_LockPart",
+    Callback = function(selected)
+        Env.Settings.LockPart = selected[1]
+        Rayfield:Notify({Title = "Parte Cambiada", Content = "Apuntando a: " .. selected[1], Duration = 3})
+    end
+})
+
+AimbotTab:CreateDropdown({
+    Name = "Modo de Activación",
+    Options = {"Mantener Presionado", "Toggle (Click Único)"},
+    CurrentOption = {"Mantener Presionado"},
+    MultipleOptions = false,
+    Flag = "Aimbot_Mode",
+    Callback = function(selected)
+        Env.Settings.Toggle = (selected[1] == "Toggle (Click Único)")
+        Rayfield:Notify({Title = "Modo Cambiado", Content = selected[1], Duration = 3})
+    end
+})
+
 AimbotTab:CreateToggle({Name = "Team Check", CurrentValue = false, Flag = "Aimbot_TeamCheck", Callback = function(v) Env.Settings.TeamCheck = v end})
 AimbotTab:CreateToggle({Name = "Rainbow FOV", CurrentValue = false, Flag = "FOV_Rainbow", Callback = function(v) Env.FOVSettings.RainbowColor = v end})
 AimbotTab:CreateColorPicker({Name = "FOV Circle Color", Color = Color3.fromRGB(255,255,255), Flag = "FOV_Color", Callback = function(c) Env.FOVSettings.Color = c end})
 AimbotTab:CreateSlider({Name = "FOV Size (1 = SUPER DESCARADO)", Range = {1, 100}, Increment = 5, CurrentValue = 90, Flag = "FOV_Radius", Callback = function(v) Env.FOVSettings.Radius = v end})
 AimbotTab:CreateSlider({Name = "Smoothness (0 = instant)", Range = {0,1.5}, Increment = 0.05, CurrentValue = 0, Flag = "Aimbot_Smoothness", Callback = function(v) Env.Settings.Sensitivity = v end})
-
 VisualsTab:CreateToggle({Name = "Enable ESP", CurrentValue = false, Flag = "ESP_Enabled", Callback = function(v) ESPSettings.Enabled = v end})
 VisualsTab:CreateToggle({Name = "Boxes", CurrentValue = true, Flag = "ESP_Boxes", Callback = function(v) ESPSettings.Boxes = v end})
 VisualsTab:CreateToggle({Name = "Tracers", CurrentValue = true, Flag = "ESP_Tracers", Callback = function(v) ESPSettings.Tracers = v end})
@@ -301,10 +416,8 @@ VisualsTab:CreateToggle({Name = "Rainbow Colors", CurrentValue = false, Flag = "
 VisualsTab:CreateColorPicker({Name = "ESP Color", Color = Color3.fromRGB(255,0,255), Flag = "ESP_Color", Callback = function(c) ESPSettings.Color = c end})
 VisualsTab:CreateSlider({Name = "Line Thickness", Range = {1,5}, Increment = 1, CurrentValue = 2, Flag = "ESP_Thickness", Callback = function(v) ESPSettings.Thickness = v end})
 VisualsTab:CreateSlider({Name = "Text Size", Range = {12,24}, Increment = 1, CurrentValue = 16, Flag = "ESP_TextSize", Callback = function(v) ESPSettings.TextSize = v end})
-
 SettingsTab:CreateButton({Name = "Guardar Configuración Ahora", Callback = function() Rayfield:SaveConfiguration() end})
 SettingsTab:CreateButton({Name = "Cargar Configuración", Callback = function() Rayfield:LoadConfiguration() end})
-
 SettingsTab:CreateToggle({
    Name = "Modo Streaming (Stream Proof)",
    CurrentValue = false,
@@ -314,9 +427,7 @@ SettingsTab:CreateToggle({
       Rayfield:Notify({Title = "Modo Streaming", Content = v and "✅ Activado (ESP oculto en streams)" or "❌ Desactivado", Duration = 5})
    end
 })
-
 Rayfield:LoadConfiguration()
-
 -- Cargar tecla guardada correctamente
 task.spawn(function()
     task.wait(2) -- Esperamos un poco más para que Rayfield cargue todo
@@ -327,5 +438,4 @@ task.spawn(function()
         print("Tecla cargada desde config: " .. keyName)
     end
 end)
-
 print("✅ Owen Xit Hub cargado con selector de tecla")
