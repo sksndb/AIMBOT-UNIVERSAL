@@ -163,6 +163,7 @@ Env.FOVCircle.Visible = false
 Env.FOVCircleOutline.Visible = false
 local RequiredDistance, Typing, Running, CurrentTween = 2000, false, false, nil
 local FrameCounter = 0
+local StreamingMode = false   -- Modo Streaming (oculta el ESP en grabaciones)
 local ESPSettings = {
    Enabled = false, Boxes = true, Tracers = true, Names = true, Skeleton = true, HealthBars = true,
    TeamCheck = true, Rainbow = false, Color = Color3.fromRGB(255, 255, 255),
@@ -302,10 +303,15 @@ VisualsTab:CreateColorPicker({Name = "ESP Color", Color = Color3.fromRGB(255,0,2
 VisualsTab:CreateSlider({Name = "Line Thickness", Range = {1,5}, Increment = 1, CurrentValue = 2, Flag = "ESP_Thickness", Callback = function(v) ESPSettings.Thickness = v end})
 VisualsTab:CreateSlider({Name = "Text Size", Range = {12,24}, Increment = 1, CurrentValue = 16, Flag = "ESP_TextSize", Callback = function(v) ESPSettings.TextSize = v end})
 
-SettingsTab:CreateButton({Name = "Guardar Configuración Ahora", Callback = function() Rayfield:SaveConfiguration() end})
-SettingsTab:CreateButton({Name = "Cargar Configuración", Callback = function() Rayfield:LoadConfiguration() end})
-
-Rayfield:LoadConfiguration()
+SettingsTab:CreateToggle({
+   Name = "Modo Streaming (Stream Proof)",
+   CurrentValue = false,
+   Flag = "StreamingMode",
+   Callback = function(v)
+      StreamingMode = v
+      Rayfield:Notify({Title = "Modo Streaming", Content = v and "✅ Activado (ESP oculto en streams)" or "❌ Desactivado", Duration = 5})
+   end
+})
 
 Rayfield:LoadConfiguration()
 
