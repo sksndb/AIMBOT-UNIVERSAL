@@ -111,7 +111,6 @@ local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362456)
 
 -- ==================== SELECTOR DE TECLA (Con Guardado) ====================
 local CurrentTriggerKey = Enum.KeyCode.Z
-
 local KeyOptions = {
     ["T"] = Enum.KeyCode.T,
     ["Q"] = Enum.KeyCode.Q,
@@ -121,6 +120,19 @@ local KeyOptions = {
     ["Clic Izquierdo"] = Enum.UserInputType.MouseButton1,
     ["Clic Derecho"] = Enum.UserInputType.MouseButton2
 }
+
+AimbotTab:CreateDropdown({
+    Name = "Tecla de Activación del Aimbot",
+    Options = {"T", "Q", "E", "Z", "X", "Clic Izquierdo", "Clic Derecho"},
+    CurrentOption = {"Z"},
+    MultipleOptions = false,
+    Flag = "Aimbot_TriggerKey",
+    Callback = function(selected)
+        local keyName = selected[1]
+        CurrentTriggerKey = KeyOptions[keyName]
+        Rayfield:Notify({Title = "Tecla Cambiada", Content = "Aimbot ahora usa: " .. keyName, Duration = 4})
+    end
+})
 
 getgenv().ExunysDeveloperAimbot = {
    DeveloperSettings = {RainbowSpeed = 1},
