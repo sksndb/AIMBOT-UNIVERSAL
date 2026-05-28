@@ -213,7 +213,8 @@ end
 RunService.Stepped:Connect(function()
    FrameCounter += 1 if FrameCounter % 3 ~= 0 then return end
    local f = Env.FOVSettings local s = Env.Settings local fc = Env.FOVCircle local fo = Env.FOVCircleOutline
-   local col = Env.Locked and f.LockedColor or (f.RainbowColor and Color3.fromHSV(tick() % 5, 1, 1) or f.Color)
+   local col = Env.Locked and Color3.fromRGB(255, 0, 0) or 
+           (f.RainbowColor and Color3.fromHSV(tick() % 5, 1, 1) or f.Color)
    if f.Enabled and s.Enabled then
       fc.Radius = f.Radius fc.NumSides = f.NumSides fc.Thickness = f.Thickness fc.Transparency = f.Transparency fc.Filled = f.Filled fc.Visible = f.Visible fc.Position = UIS:GetMouseLocation() fc.Color = col
       fo.Radius = f.Radius + f.Thickness fo.NumSides = f.NumSides fo.Thickness = f.Thickness + 1 fo.Transparency = f.Transparency fo.Visible = f.Visible fo.Position = UIS:GetMouseLocation() fo.Color = f.RainbowOutlineColor and Color3.fromHSV(tick() % 5, 1, 1) or f.OutlineColor
@@ -400,6 +401,16 @@ AimbotTab:CreateDropdown({
     end
 })
 
+AimbotTab:CreateToggle({
+    Name = "Triggerbot (Auto Disparo)",
+    CurrentValue = false,
+    Flag = "Triggerbot_Enabled",
+    Callback = function(v)
+        getgenv().TriggerbotEnabled = v
+        Rayfield:Notify({Title = "Triggerbot", Content = v and "✅ Activado" or "❌ Desactivado", Duration = 3})
+    end
+})
+
 AimbotTab:CreateToggle({Name = "Team Check", CurrentValue = false, Flag = "Aimbot_TeamCheck", Callback = function(v) Env.Settings.TeamCheck = v end})
 AimbotTab:CreateToggle({Name = "Rainbow FOV", CurrentValue = false, Flag = "FOV_Rainbow", Callback = function(v) Env.FOVSettings.RainbowColor = v end})
 AimbotTab:CreateColorPicker({Name = "FOV Circle Color", Color = Color3.fromRGB(255,255,255), Flag = "FOV_Color", Callback = function(c) Env.FOVSettings.Color = c end})
@@ -438,4 +449,36 @@ task.spawn(function()
         print("Tecla cargada desde config: " .. keyName)
     end
 end)
+
+-- ==================== TRIGGERBOT (Versión Final) ====================
+local VirtualInputManager = game:GetService("VirtualInputManager")
+getgenv().TriggerbotEnabled = false
+local LastShot = 0
+local TriggerbotDelay = 0.12
+
+-- Slider del Triggerbot (colocado correctamente en el menú)
+AimbotTab:CreateSlider({
+    Name = "Triggerbot Delay (Velocidad)",
+    Range = {0.05, 0.35},
+    Increment = 0.01,
+    CurrentValue = 0.12,
+    Flag = "Triggerbot_Delay",
+    Callback = function(v)
+        TriggerbotDelay = v
+    end
+})
+
+RunService.Heartbeat:Connect(function()
+    if not getgenv().TriggerbotEnabled then return end
+    if not (Env.Locked and Running) then return end
+    
+    local currentTime = tick()
+    if currentTime - LastShot >= TriggerbotDelay then
+        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 1)   -- Click Down
+        task.wait(0.025)
+        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 1)  -- Click Up
+        LastShot = currentTime
+    end
+end)
+
 print("✅ Owen Xit Hub cargado con selector de tecla")
