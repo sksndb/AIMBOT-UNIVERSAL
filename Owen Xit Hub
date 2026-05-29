@@ -192,21 +192,44 @@ local function RemoveESP(p)
    ESPObjects[p] = nil
 end
 local function GetClosestPlayer()
-   local s = Env.Settings local visRad = Env.FOVSettings.Radius local intRad = 330 - visRad RequiredDistance = Env.FOVSettings.Enabled and intRad or 2000
+   local s = Env.Settings 
+   local visRad = Env.FOVSettings.Radius 
+   local intRad = 330 - visRad 
+   RequiredDistance = Env.FOVSettings.Enabled and intRad or 2000
+
    local Closest, dist = nil, RequiredDistance
+
    for _, p in Players:GetPlayers() do
-      if p == LP then continue end local c = p.Character local h = c and c:FindFirstChildOfClass("Humanoid")
+      if p == LP then continue end 
+      local c = p.Character 
+      local h = c and c:FindFirstChildOfClass("Humanoid")
+      
       if not (c and h and h.Health > 0 and c:FindFirstChild(s.LockPart)) then continue end
-      if s.TeamCheck and p.Team == LP.Team then continue end if table.find(Env.Blacklisted, p.Name) then continue end
+      if s.TeamCheck and p.Team == LP.Team then continue end 
+      if table.find(Env.Blacklisted, p.Name) then continue end
+
       local part = c[s.LockPart]
+
+      -- WallCheck
       if s.WallCheck then
          local parts = LP.Character and LP.Character:GetDescendants() or {}
          for _, v in c:GetDescendants() do table.insert(parts, v) end
          if #Camera:GetPartsObscuringTarget({part.Position}, parts) > 0 then continue end
       end
+
+      -- Visible Check (Nuevo)
+      if s.VisibleCheck then
+         local _, onScreen = Camera:WorldToViewportPoint(part.Position)
+         if not onScreen then continue end
+      end
+
       local vec, onScr = Camera:WorldToViewportPoint(part.Position)
       local d = (UIS:GetMouseLocation() - Vector2.new(vec.X, vec.Y)).Magnitude
-      if d < dist and onScr then dist = d Closest = p end
+
+      if d < dist and onScr then 
+         dist = d 
+         Closest = p 
+      end
    end
    return Closest
 end
@@ -379,7 +402,7 @@ AimbotTab:CreateToggle({
 
 AimbotTab:CreateDropdown({
     Name = "Parte del Cuerpo",
-    Options = {"Head", "UpperTorso"},
+    Options = {"Head", "UpperTorso", "LowerTorso", "HumanoidRootPart"},
     CurrentOption = {"Head"},
     MultipleOptions = false,
     Flag = "Aimbot_LockPart",
@@ -412,6 +435,15 @@ AimbotTab:CreateToggle({
 })
 
 AimbotTab:CreateToggle({Name = "Team Check", CurrentValue = false, Flag = "Aimbot_TeamCheck", Callback = function(v) Env.Settings.TeamCheck = v end})
+AimbotTab:CreateToggle({
+    Name = "Visible Check (Solo jugadores en pantalla)",
+    CurrentValue = false,
+    Flag = "VisibleCheck",
+    Callback = function(v)
+        Env.Settings.VisibleCheck = v
+        Rayfield:Notify({Title = "Visible Check", Content = v and "✅ Activado" or "❌ Desactivado", Duration = 3})
+    end
+})
 AimbotTab:CreateToggle({Name = "Rainbow FOV", CurrentValue = false, Flag = "FOV_Rainbow", Callback = function(v) Env.FOVSettings.RainbowColor = v end})
 AimbotTab:CreateColorPicker({Name = "FOV Circle Color", Color = Color3.fromRGB(255,255,255), Flag = "FOV_Color", Callback = function(c) Env.FOVSettings.Color = c end})
 AimbotTab:CreateSlider({Name = "FOV Size (1 = SUPER DESCARADO)", Range = {1, 100}, Increment = 5, CurrentValue = 90, Flag = "FOV_Radius", Callback = function(v) Env.FOVSettings.Radius = v end})
@@ -450,21 +482,20 @@ task.spawn(function()
     end
 end)
 
--- ==================== TRIGGERBOT (Versión Final) ====================
+-- ==================== TRIGGERBOT (1 a 12) ====================
 local VirtualInputManager = game:GetService("VirtualInputManager")
 getgenv().TriggerbotEnabled = false
 local LastShot = 0
-local TriggerbotDelay = 0.12
+local TriggerbotDelay = 0.06
 
--- Slider del Triggerbot (colocado correctamente en el menú)
 AimbotTab:CreateSlider({
-    Name = "Triggerbot Delay (Velocidad)",
-    Range = {0.05, 0.35},
-    Increment = 0.01,
-    CurrentValue = 0.12,
+    Name = "Triggerbot Speed (1 = Muy Rápido | 12 = Más Lento)",
+    Range = {1, 12},
+    Increment = 1,
+    CurrentValue = 6,
     Flag = "Triggerbot_Delay",
     Callback = function(v)
-        TriggerbotDelay = v
+        TriggerbotDelay = v / 100
     end
 })
 
@@ -474,9 +505,9 @@ RunService.Heartbeat:Connect(function()
     
     local currentTime = tick()
     if currentTime - LastShot >= TriggerbotDelay then
-        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 1)   -- Click Down
-        task.wait(0.025)
-        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 1)  -- Click Up
+        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 1)
+        task.wait(0.02)                    -- un poco más rápido
+        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 1)
         LastShot = currentTime
     end
 end)
