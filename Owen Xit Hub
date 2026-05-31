@@ -181,7 +181,7 @@ local function CreateESP(p)
    end
    data.SkelLines = {}
    if ESPSettings.Skeleton then for _ = 1, #data.Links do local ln = Drawing.new("Line") ln.Thickness = 1.8 ln.Transparency = 0.7 table.insert(data.SkelLines, ln) end end
-   data.Highlight = Instance.new("Highlight") data.Highlight.FillTransparency = 0.4 data.Highlight.OutlineTransparency = 0 data.Highlight.Parent = Camera
+   data.Highlight = Instance.new("Highlight") data.Highlight.FillTransparency = ESPSettings.HighlightTransparency or 0.4 data.Highlight.OutlineTransparency = 0 data.Highlight.Parent = Camera
    ESPObjects[p] = data
 end
 local function RemoveESP(p)
@@ -374,6 +374,9 @@ UIS.InputBegan:Connect(function(input)
 
         if Running then
             Env.Locked = GetClosestPlayer()
+            if Env.Locked then
+                Rayfield:Notify({Title = "🎯 Locked", Content = "Apuntando a: " .. Env.Locked.Name, Duration = 2})
+            end
         else
             if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end
             Env.Locked = nil
@@ -448,6 +451,16 @@ AimbotTab:CreateToggle({Name = "Rainbow FOV", CurrentValue = false, Flag = "FOV_
 AimbotTab:CreateColorPicker({Name = "FOV Circle Color", Color = Color3.fromRGB(255,255,255), Flag = "FOV_Color", Callback = function(c) Env.FOVSettings.Color = c end})
 AimbotTab:CreateSlider({Name = "FOV Size (1 = SUPER DESCARADO)", Range = {1, 100}, Increment = 5, CurrentValue = 90, Flag = "FOV_Radius", Callback = function(v) Env.FOVSettings.Radius = v end})
 AimbotTab:CreateSlider({Name = "Smoothness (0 = instant)", Range = {0,1.5}, Increment = 0.05, CurrentValue = 0, Flag = "Aimbot_Smoothness", Callback = function(v) Env.Settings.Sensitivity = v end})
+AimbotTab:CreateSlider({
+    Name = "Mouse Sensitivity (Modo 2)",
+    Range = {1, 20},
+    Increment = 0.5,
+    CurrentValue = 3.5,
+    Flag = "Aimbot_Sensitivity2",
+    Callback = function(v)
+        Env.Settings.Sensitivity2 = v
+    end
+})
 VisualsTab:CreateToggle({Name = "Enable ESP", CurrentValue = false, Flag = "ESP_Enabled", Callback = function(v) ESPSettings.Enabled = v end})
 VisualsTab:CreateToggle({Name = "Boxes", CurrentValue = true, Flag = "ESP_Boxes", Callback = function(v) ESPSettings.Boxes = v end})
 VisualsTab:CreateToggle({Name = "Tracers", CurrentValue = true, Flag = "ESP_Tracers", Callback = function(v) ESPSettings.Tracers = v end})
@@ -459,6 +472,26 @@ VisualsTab:CreateToggle({Name = "Rainbow Colors", CurrentValue = false, Flag = "
 VisualsTab:CreateColorPicker({Name = "ESP Color", Color = Color3.fromRGB(255,0,255), Flag = "ESP_Color", Callback = function(c) ESPSettings.Color = c end})
 VisualsTab:CreateSlider({Name = "Line Thickness", Range = {1,5}, Increment = 1, CurrentValue = 2, Flag = "ESP_Thickness", Callback = function(v) ESPSettings.Thickness = v end})
 VisualsTab:CreateSlider({Name = "Text Size", Range = {12,24}, Increment = 1, CurrentValue = 16, Flag = "ESP_TextSize", Callback = function(v) ESPSettings.TextSize = v end})
+VisualsTab:CreateSlider({
+    Name = "Max Distance ESP",
+    Range = {50, 2000},
+    Increment = 50,
+    CurrentValue = 500,
+    Flag = "ESP_MaxDistance",
+    Callback = function(v)
+        ESPSettings.MaxDistance = v
+    end
+})
+VisualsTab:CreateSlider({
+    Name = "Highlight Transparency",
+    Range = {0, 10},
+    Increment = 1,
+    CurrentValue = 4,
+    Flag = "ESP_HighlightTransp",
+    Callback = function(v)
+        ESPSettings.HighlightTransparency = v / 10
+    end
+})
 SettingsTab:CreateButton({Name = "Guardar Configuración Ahora", Callback = function() Rayfield:SaveConfiguration() end})
 SettingsTab:CreateButton({Name = "Cargar Configuración", Callback = function() Rayfield:LoadConfiguration() end})
 SettingsTab:CreateToggle({
@@ -467,49 +500,62 @@ SettingsTab:CreateToggle({
    Flag = "StreamingMode",
    Callback = function(v)
       StreamingMode = v
-      Rayfield:Notify({Title = "Modo Streaming", Content = v and "✅ Activado (ESP oculto en streams)" or "❌ Desactivado", Duration = 5})
+      -- Solo ocultar el FOV (Drawing), el GUI de Rayfield ya es invisible en stream
+      Env.FOVSettings.Visible = not v
+      if not v then
+         Rayfield:Notify({Title = "Modo Streaming", Content = "❌ Desactivado", Duration = 5})
+      end
    end
 })
-Rayfield:LoadConfiguration()
--- Cargar tecla guardada correctamente
-task.spawn(function()
-    task.wait(2) -- Esperamos un poco más para que Rayfield cargue todo
-    local savedFlag = Rayfield.Flags.Aimbot_TriggerKey
-    if savedFlag and savedFlag.CurrentOption and #savedFlag.CurrentOption > 0 then
-        local keyName = savedFlag.CurrentOption[1]
-        CurrentTriggerKey = KeyOptions[keyName] or Enum.KeyCode.Z
-        print("Tecla cargada desde config: " .. keyName)
-    end
-end)
 
--- ==================== TRIGGERBOT (1 a 12) ====================
-local VirtualInputManager = game:GetService("VirtualInputManager")
+Rayfield:LoadConfiguration()
+
 getgenv().TriggerbotEnabled = false
 local LastShot = 0
 local TriggerbotDelay = 0.06
 
-AimbotTab:CreateSlider({
-    Name = "Triggerbot Speed (1 = Muy Rápido | 12 = Más Lento)",
-    Range = {1, 12},
-    Increment = 1,
-    CurrentValue = 6,
-    Flag = "Triggerbot_Delay",
-    Callback = function(v)
-        TriggerbotDelay = v / 100
+task.spawn(function()
+    task.wait(2)
+
+    -- Tecla del aimbot
+    local savedFlag = Rayfield.Flags.Aimbot_TriggerKey
+    if savedFlag and savedFlag.CurrentOption and #savedFlag.CurrentOption > 0 then
+        local keyName = savedFlag.CurrentOption[1]
+        CurrentTriggerKey = KeyOptions[keyName] or Enum.KeyCode.Z
+    end
+
+    local tbFlag = Rayfield.Flags["Triggerbot_Enabled"]
+    if tbFlag then getgenv().TriggerbotEnabled = tbFlag.CurrentValue end
+
+    local tdFlag = Rayfield.Flags["Triggerbot_Delay"]
+    if tdFlag then TriggerbotDelay = tdFlag.CurrentValue / 100 end
+
+    local vcFlag = Rayfield.Flags["VisibleCheck"]
+    if vcFlag then Env.Settings.VisibleCheck = vcFlag.CurrentValue end
+
+    local s2Flag = Rayfield.Flags["Aimbot_Sensitivity2"]
+    if s2Flag then Env.Settings.Sensitivity2 = s2Flag.CurrentValue end
+
+    local mdFlag = Rayfield.Flags["ESP_MaxDistance"]
+    if mdFlag then ESPSettings.MaxDistance = mdFlag.CurrentValue end
+
+    local htFlag = Rayfield.Flags["ESP_HighlightTransp"]
+    if htFlag then ESPSettings.HighlightTransparency = htFlag.CurrentValue / 10 end
+end)
+
+SettingsTab:CreateButton({
+    Name = "⛔ PANIC - Desactivar Todo",
+    Callback = function()
+        Env.Settings.Enabled = false
+        ESPSettings.Enabled = false
+        getgenv().TriggerbotEnabled = false
+        Env.FOVSettings.Visible = false
+        Running = false
+        Env.Locked = nil
+        if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end
+        for p, _ in pairs(ESPObjects) do RemoveESP(p) end
+        Rayfield:Notify({Title = "⛔ PANIC", Content = "Todo desactivado", Duration = 3})
     end
 })
-
-RunService.Heartbeat:Connect(function()
-    if not getgenv().TriggerbotEnabled then return end
-    if not (Env.Locked and Running) then return end
-    
-    local currentTime = tick()
-    if currentTime - LastShot >= TriggerbotDelay then
-        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 1)
-        task.wait(0.02)                    -- un poco más rápido
-        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 1)
-        LastShot = currentTime
-    end
-end)
 
 print("✅ Owen Xit Hub cargado con selector de tecla")
