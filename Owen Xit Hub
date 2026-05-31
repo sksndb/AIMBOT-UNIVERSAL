@@ -218,12 +218,11 @@ local function GetClosestPlayer()
       end
 
       -- Visible Check (Nuevo)
-      if s.VisibleCheck then
-         local _, onScreen = Camera:WorldToViewportPoint(part.Position)
-         if not onScreen then continue end
-      end
-
-      local vec, onScr = Camera:WorldToViewportPoint(part.Position)
+            if s.VisibleCheck then
+    local vec2, onScreen = Camera:WorldToViewportPoint(part.Position)
+    if not onScreen or vec2.Z < 0 then continue end
+end
+local vec, onScr = Camera:WorldToViewportPoint(part.Position)
       local d = (UIS:GetMouseLocation() - Vector2.new(vec.X, vec.Y)).Magnitude
 
       if d < dist and onScr then 
@@ -461,6 +460,23 @@ AimbotTab:CreateSlider({
         Env.Settings.Sensitivity2 = v
     end
 })
+AimbotTab:CreateDropdown({
+    Name = "Modo de Movimiento del Aimbot",
+    Options = {"Modo 1 (Suave/Tween)", "Modo 2 (Mouse Directo)"},
+    CurrentOption = {"Modo 1 (Suave/Tween)"},
+    MultipleOptions = false,
+    Flag = "Aimbot_LockMode",
+    Callback = function(selected)
+        if selected[1] == "Modo 1 (Suave/Tween)" then
+            Env.Settings.LockMode = 1
+            Rayfield:Notify({Title = "LockMode", Content = "Modo 1 activado — usa Smoothness", Duration = 3})
+        else
+            Env.Settings.LockMode = 2
+            Rayfield:Notify({Title = "LockMode", Content = "Modo 2 activado — usa Mouse Sensitivity", Duration = 3})
+        end
+    end
+})
+
 VisualsTab:CreateToggle({Name = "Enable ESP", CurrentValue = false, Flag = "ESP_Enabled", Callback = function(v) ESPSettings.Enabled = v end})
 VisualsTab:CreateToggle({Name = "Boxes", CurrentValue = true, Flag = "ESP_Boxes", Callback = function(v) ESPSettings.Boxes = v end})
 VisualsTab:CreateToggle({Name = "Tracers", CurrentValue = true, Flag = "ESP_Tracers", Callback = function(v) ESPSettings.Tracers = v end})
@@ -517,7 +533,6 @@ local TriggerbotDelay = 0.06
 task.spawn(function()
     task.wait(2)
 
-    -- Tecla del aimbot
     local savedFlag = Rayfield.Flags.Aimbot_TriggerKey
     if savedFlag and savedFlag.CurrentOption and #savedFlag.CurrentOption > 0 then
         local keyName = savedFlag.CurrentOption[1]
@@ -541,6 +556,35 @@ task.spawn(function()
 
     local htFlag = Rayfield.Flags["ESP_HighlightTransp"]
     if htFlag then ESPSettings.HighlightTransparency = htFlag.CurrentValue / 10 end
+
+    local lmFlag = Rayfield.Flags["Aimbot_LockMode"]
+    if lmFlag and lmFlag.CurrentOption then
+        Env.Settings.LockMode = (lmFlag.CurrentOption[1] == "Modo 1 (Suave/Tween)") and 1 or 2
+    end
+end)
+
+AimbotTab:CreateSlider({
+    Name = "Triggerbot Speed (1 = Muy Rápido | 12 = Más Lento)",
+    Range = {1, 12},
+    Increment = 1,
+    CurrentValue = 6,
+    Flag = "Triggerbot_Delay",
+    Callback = function(v)
+        TriggerbotDelay = v / 100
+    end
+})
+
+local VirtualInputManager = game:GetService("VirtualInputManager")
+RunService.Heartbeat:Connect(function()
+    if not getgenv().TriggerbotEnabled then return end
+    if not (Env.Locked and Running) then return end
+    local currentTime = tick()
+    if currentTime - LastShot >= TriggerbotDelay then
+        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 1)
+        task.wait(0.02)
+        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 1)
+        LastShot = currentTime
+    end
 end)
 
 SettingsTab:CreateButton({
