@@ -639,12 +639,26 @@ AimbotTab:CreateSlider({
 
 -- ==================== 🎨 VISUALS TAB ====================
 
--- Activar ESP
 VisualsTab:CreateToggle({
     Name = "Enable ESP",
     CurrentValue = false,
     Flag = "ESP_Enabled",
-    Callback = function(v) ESPSettings.Enabled = v end
+    Callback = function(v)
+        ESPSettings.Enabled = v
+        if v then
+            -- Recrear ESP para todos los jugadores actuales
+            for _, p in Players:GetPlayers() do
+                if p ~= LP then
+                    RemoveESP(p)
+                    CreateESP(p)
+                end
+            end
+        else
+            for _, p in Players:GetPlayers() do
+                RemoveESP(p)
+            end
+        end
+    end
 })
 
 -- Color
