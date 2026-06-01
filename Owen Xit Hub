@@ -1020,23 +1020,33 @@ task.spawn(function()
     local nlf = Rayfield.Flags["Aimbot_NotifyLock"]
     if nlf then NotifyLock = nlf.CurrentValue end
 
-    -- Colores
     local fcf = Rayfield.Flags["FOV_Color"]
-    if fcf and fcf.Value then Env.FOVSettings.Color = fcf.Value end
+    if fcf then
+        local c = fcf.Value or fcf.Color or fcf.CurrentValue
+        if c then Env.FOVSettings.Color = c end
+    end
 
     local lcf = Rayfield.Flags["Aimbot_LockedColor"]
-    if lcf and lcf.Value then
-        Env.FOVSettings.LockedColor = lcf.Value
-        ESPSettings.LockedColor     = lcf.Value
+    if lcf then
+        local c = lcf.Value or lcf.Color or lcf.CurrentValue
+        if c then
+            Env.FOVSettings.LockedColor = c
+            ESPSettings.LockedColor = c
+        end
     end
 
     local ecf = Rayfield.Flags["ESP_Color"]
-    if ecf and ecf.Value then ESPSettings.Color = ecf.Value end
+    if ecf then
+        local c = ecf.Value or ecf.Color or ecf.CurrentValue
+        if c then ESPSettings.Color = c end
+    end
 
     local elcf = Rayfield.Flags["ESP_LockedColor"]
-    if elcf and elcf.Value then ESPSettings.LockedColor = elcf.Value end
+    if elcf then
+        local c = elcf.Value or elcf.Color or elcf.CurrentValue
+        if c then ESPSettings.LockedColor = c end
+    end
 
-    -- Si el ESP estaba activo, refrescar
     local espf = Rayfield.Flags["ESP_Enabled"]
     if espf and espf.CurrentValue then
         ESPSettings.Enabled = true
