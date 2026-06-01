@@ -431,6 +431,23 @@ end)
 RunService.Heartbeat:Connect(function()
     if not getgenv().TriggerbotEnabled then return end
     if not (Env.Locked and Running) then return end
+
+    local char = Env.Locked.Character
+    local part = char and char:FindFirstChild(Env.Settings.LockPart)
+    if not part then return end
+
+    local myChar = LP.Character
+    if not myChar then return end
+    local ignoreParts = {}
+    for _, v in ipairs(myChar:GetDescendants()) do table.insert(ignoreParts, v) end
+    for _, v in ipairs(char:GetDescendants()) do table.insert(ignoreParts, v) end
+
+    local blocked = #Camera:GetPartsObscuringTarget({part.Position}, ignoreParts) > 0
+    if blocked then return end
+
+    local vec, onScreen = Camera:WorldToViewportPoint(part.Position)
+    if not onScreen or vec.Z < 0 then return end
+
     local currentTime = tick()
     if currentTime - LastShot >= TriggerbotDelay then
         VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 1)
@@ -798,6 +815,12 @@ task.spawn(function()
     if lmFlag and lmFlag.CurrentOption then
         Env.Settings.LockMode = (lmFlag.CurrentOption[1] == "Modo 1 (Suave/Tween)") and 1 or 2
     end
+
+    local fovColorFlag = Rayfield.Flags["FOV_Color"]
+    if fovColorFlag then Env.FOVSettings.Color = fovColorFlag.Value end
+
+    local espColorFlag = Rayfield.Flags["ESP_Color"]
+    if espColorFlag then ESPSettings.Color = espColorFlag.Value end
 end)
 
 print("✅ Owen Xit Hub cargado correctamente")
