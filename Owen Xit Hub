@@ -181,8 +181,8 @@ local R6Links = {
 
 local function CreateESP(p)
     if ESPObjects[p] then return end
-    local char = p.Character or p.CharacterAdded:Wait()
-    if not char then return end
+    local char = p.Character
+    if not char then return end  -- Si no hay char simplemente no crea, el Stepped lo reintentará
     local data = {Links = char:FindFirstChild("UpperTorso") and R15Links or R6Links}
     if ESPSettings.Boxes then
         data.Box = Drawing.new("Square")
