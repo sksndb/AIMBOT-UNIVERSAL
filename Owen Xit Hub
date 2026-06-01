@@ -312,7 +312,7 @@ RunService.Stepped:Connect(function()
         if ESPSettings.TeamCheck and p.Team == LP.Team then RemoveESP(p) continue end
         if not ESPObjects[p] then CreateESP(p) end
         local d = ESPObjects[p]
-        local rPos, onScr = Camera:WorldToViewportPoint(root.Position)
+        local rPos, onScr = Camera:WorldToViewportPoint(head.Position)
         if not onScr then
             if d.Box then d.Box.Visible = false end
             if d.Tracer then d.Tracer.Visible = false end
