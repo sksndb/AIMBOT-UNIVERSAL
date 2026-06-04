@@ -271,7 +271,6 @@ local ESPSettings = {
     HighlightTransparency = 0.5,
 }
 
--- Crosshair
 local CrosshairEnabled = false
 local CrosshairColor   = Color3.fromRGB(255, 255, 255)
 local CrosshairSize    = 10
@@ -319,7 +318,6 @@ local function UpdateCrosshair()
     end
 end
 
--- Anti AFK
 local AntiAFKEnabled = false
 local VirtualUser = game:GetService("VirtualUser")
 LP.Idled:Connect(function()
@@ -330,7 +328,6 @@ LP.Idled:Connect(function()
     end
 end)
 
--- Hitbox Expander
 local HitboxEnabled  = false
 local HitboxSize     = 5
 local HitboxPart     = "HumanoidRootPart"
@@ -370,7 +367,6 @@ local function RemoveHitbox()
     OriginalSizes = {}
 end
 
--- Silent Aim
 local SilentAimEnabled = false
 local SilentAimPart    = "HumanoidRootPart"
 
@@ -378,7 +374,6 @@ getgenv().TriggerbotEnabled = false
 local LastShot        = 0
 local TriggerbotDelay = 0.06
 
---==================== ESP LINKS ====================--
 local ESPObjects = {}
 local R15Links = {
     {"Head","UpperTorso"},
@@ -394,7 +389,6 @@ local R6Links = {
     {"Torso","Left Leg"}, {"Torso","Right Leg"},
 }
 
---==================== FUNCIONES ESP ====================--
 local function CreateESP(p)
     if ESPObjects[p] then
         return
@@ -499,7 +493,6 @@ local function RefreshAllESP()
     end
 end
 
---==================== AIMBOT LOGIC ====================--
 local function GetClosestPlayer()
     local s = Env.Settings
     RequiredDistance = Env.FOVSettings.Enabled and (330 - Env.FOVSettings.Radius) or 2000
@@ -556,7 +549,6 @@ local function GetClosestPlayer()
     return Closest
 end
 
---==================== SILENT AIM ====================--
 local oldNamecall
 oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
     local method = getnamecallmethod()
@@ -577,7 +569,6 @@ oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
     return oldNamecall(self, ...)
 end)
 
---==================== RUNSERVICE STEPPED ====================--
 RunService.Stepped:Connect(function()
     FrameCounter += 1
     if FrameCounter % 2 ~= 0 then
@@ -589,17 +580,14 @@ RunService.Stepped:Connect(function()
     local fc = Env.FOVCircle
     local fo = Env.FOVCircleOutline
 
-    -- Crosshair
     UpdateCrosshair()
 
-    -- Hitbox
     if HitboxEnabled then
         ApplyHitbox()
     else
         RemoveHitbox()
     end
 
-    -- FOV
     if f.Enabled and s.Enabled and not StreamingMode then
         local col = Env.Locked and f.LockedColor or
             (f.RainbowColor and Color3.fromHSV(tick() % 5, 1, 1) or f.Color)
@@ -682,7 +670,6 @@ RunService.Stepped:Connect(function()
         local baseColor = ESPSettings.Rainbow and Color3.fromHSV((tick()*0.5 + p.UserId/255)%1, 1, 1) or ESPSettings.Color
         local drawColor = isLocked and ESPSettings.LockedColor or baseColor
 
-        -- Box
         if ESPSettings.Boxes then
             local topV = Camera:WorldToViewportPoint(head.Position + Vector3.new(0, 0.6, 0))
             local botV = Camera:WorldToViewportPoint(root.Position - Vector3.new(0, 3.5, 0))
@@ -697,7 +684,6 @@ RunService.Stepped:Connect(function()
             d.Box.Visible = false
         end
 
-        -- Tracer
         if ESPSettings.Tracers then
             d.Tracer.From    = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
             d.Tracer.To      = Vector2.new(rPos.X, rPos.Y + 20)
@@ -707,7 +693,6 @@ RunService.Stepped:Connect(function()
             d.Tracer.Visible = false
         end
 
-        -- Names
         if ESPSettings.Names then
             local hPos      = Camera:WorldToViewportPoint(head.Position)
             d.Name.Text     = p.Name .. "\n" .. math.floor(hum.Health) .. " HP | " .. math.floor(dist) .. "u"
@@ -719,7 +704,6 @@ RunService.Stepped:Connect(function()
             d.Name.Visible = false
         end
 
-        -- Health bars
         if ESPSettings.HealthBars then
             local topV = Camera:WorldToViewportPoint(head.Position + Vector3.new(0, 0.6, 0))
             local botV = Camera:WorldToViewportPoint(root.Position - Vector3.new(0, 3.5, 0))
@@ -739,7 +723,6 @@ RunService.Stepped:Connect(function()
             d.HB.Visible   = false
         end
 
-        -- Skeleton
         if ESPSettings.Skeleton then
             for i, line in ipairs(d.SkelLines) do
                 local pair = d.Links[i]
@@ -762,14 +745,12 @@ RunService.Stepped:Connect(function()
             end
         end
 
-        -- Highlight
         d.Highlight.FillTransparency = ESPSettings.HighlightTransparency
         d.Highlight.FillColor        = drawColor
         d.Highlight.OutlineColor     = drawColor
         d.Highlight.Adornee          = c
         d.Highlight.Enabled          = true
 
-        -- Chams
         if ESPSettings.Chams then
             d.Chams.Color3        = ESPSettings.ChamsColor
             d.Chams.SurfaceColor3 = ESPSettings.ChamsColor
@@ -780,7 +761,6 @@ RunService.Stepped:Connect(function()
     end
 end)
 
---==================== AIMBOT HEARTBEAT ====================--
 RunService.Heartbeat:Connect(function()
     if not Running or not Env.Settings.Enabled then
         return
@@ -834,7 +814,6 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
---==================== TRIGGERBOT HEARTBEAT ====================--
 RunService.Heartbeat:Connect(function()
     if not getgenv().TriggerbotEnabled then
         return
@@ -879,7 +858,6 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
---==================== INPUT ====================--
 UIS.InputBegan:Connect(function(input, gpe)
     if gpe then
         return
@@ -925,9 +903,6 @@ UIS.InputEnded:Connect(function(input, gpe)
     end
 end)
 
---==================== UI ELEMENTS ====================--
-
--- Aimbot Tab
 AimbotTab:CreateToggle({
     Name = "Aimbot",
     CurrentValue = Env.Settings.Enabled,
@@ -1034,7 +1009,6 @@ AimbotTab:CreateDropdown({
     end
 })
 
--- FOV
 AimbotTab:CreateToggle({
     Name = "FOV Enabled",
     CurrentValue = Env.FOVSettings.Enabled,
@@ -1061,7 +1035,6 @@ AimbotTab:CreateToggle({
     end
 })
 
--- Visuals Tab
 VisualsTab:CreateToggle({
     Name = "ESP",
     CurrentValue = ESPSettings.Enabled,
@@ -1155,7 +1128,6 @@ VisualsTab:CreateColorPicker({
     end
 })
 
--- Misc Tab
 MiscTab:CreateToggle({
     Name = "Anti AFK",
     CurrentValue = AntiAFKEnabled,
@@ -1249,7 +1221,6 @@ MiscTab:CreateSlider({
     end
 })
 
--- Settings Tab
 SettingsTab:CreateToggle({
     Name = "Streaming Mode (oculta visuales)",
     CurrentValue = StreamingMode,
