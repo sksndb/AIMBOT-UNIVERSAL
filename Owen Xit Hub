@@ -1,13 +1,14 @@
--- ╔═══════════════════════════════════════════════════════════════╗
--- ║           OWEN XIT HUB — Versión Final                       ║
--- ║   Aimbot + ESP + Triggerbot + Silent Aim + Hitbox Expander   ║
--- ║                  by Owen Xit                                  ║
--- ╚═══════════════════════════════════════════════════════════════╝
+--[[===========================================================
+    OWEN XIT HUB — ULTRA PRO EDITION
+    Aimbot + Silent Aim + Triggerbot + ESP + Hitbox + Crosshair
+    by Owen Xit
+===========================================================]]--
 
--- ==================== KEY SYSTEM ====================
+--==================== KEY SYSTEM ====================--
 local KeySystemEnabled = true
 local KeyUrl = "https://raw.githubusercontent.com/sksndb/Key/refs/heads/main/Key%20Del%20Aimbot%20Universal"
 local CorrectKey = "fallback_key"
+
 pcall(function()
     local response = game:HttpGet(KeyUrl, true)
     if response and response ~= "" then
@@ -16,14 +17,18 @@ pcall(function()
 end)
 
 local KeyFile = "owen_xit_key.txt"
+
 local function LoadSavedKey()
     if isfile and isfile(KeyFile) then
         return readfile(KeyFile):match("^%s*(.-)%s*$") or ""
     end
     return nil
 end
+
 local function SaveKey(key)
-    if writefile then writefile(KeyFile, key) end
+    if writefile then
+        writefile(KeyFile, key)
+    end
 end
 
 local savedKey = LoadSavedKey()
@@ -143,13 +148,23 @@ if KeySystemEnabled and savedKey ~= CorrectKey then
         end
     end
 
-    InputBox.FocusLost:Connect(function(enter) if enter then CheckKey(InputBox.Text) end end)
-    Btn.MouseButton1Click:Connect(function() CheckKey(InputBox.Text) end)
+    InputBox.FocusLost:Connect(function(enter)
+        if enter then
+            CheckKey(InputBox.Text)
+        end
+    end)
+
+    Btn.MouseButton1Click:Connect(function()
+        CheckKey(InputBox.Text)
+    end)
+
     repeat task.wait() until entered or not ScreenGui.Parent
-    if not entered then return end
+    if not entered then
+        return
+    end
 end
 
--- ==================== SERVICIOS ====================
+--==================== SERVICIOS ====================--
 local Players      = game:GetService("Players")
 local RunService   = game:GetService("RunService")
 local UIS          = game:GetService("UserInputService")
@@ -158,7 +173,7 @@ local VIM          = game:GetService("VirtualInputManager")
 local LP           = Players.LocalPlayer
 local Camera       = workspace.CurrentCamera
 
--- ==================== RAYFIELD ====================
+--==================== RAYFIELD ====================--
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 local Window = Rayfield:CreateWindow({
     Name = "Owen Xit Hub",
@@ -177,7 +192,7 @@ local VisualsTab  = Window:CreateTab("🎨 Visuals",  4483362458)
 local MiscTab     = Window:CreateTab("⚡ Misc",      4483362458)
 local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362456)
 
--- ==================== VARIABLES ====================
+--==================== VARIABLES ====================--
 local CurrentTriggerKey = Enum.KeyCode.Z
 local KeyOptions = {
     ["T"]              = Enum.KeyCode.T,
@@ -264,7 +279,9 @@ local CrosshairThick   = 1
 local CrosshairLines   = {}
 
 local function CreateCrosshair()
-    for _, l in ipairs(CrosshairLines) do l:Remove() end
+    for _, l in ipairs(CrosshairLines) do
+        l:Remove()
+    end
     CrosshairLines = {}
     for _ = 1, 4 do
         local l = Drawing.new("Line")
@@ -279,7 +296,9 @@ CreateCrosshair()
 
 local function UpdateCrosshair()
     if not CrosshairEnabled or StreamingMode then
-        for _, l in ipairs(CrosshairLines) do l.Visible = false end
+        for _, l in ipairs(CrosshairLines) do
+            l.Visible = false
+        end
         return
     end
     local cx = Camera.ViewportSize.X / 2
@@ -319,11 +338,17 @@ local OriginalSizes  = {}
 
 local function ApplyHitbox()
     for _, p in Players:GetPlayers() do
-        if p == LP then continue end
+        if p == LP then
+            continue
+        end
         local c = p.Character
-        if not c then continue end
+        if not c then
+            continue
+        end
         local part = c:FindFirstChild(HitboxPart)
-        if not part then continue end
+        if not part then
+            continue
+        end
         if not OriginalSizes[p] then
             OriginalSizes[p] = part.Size
         end
@@ -334,9 +359,13 @@ end
 local function RemoveHitbox()
     for p, originalSize in pairs(OriginalSizes) do
         local c = p.Character
-        if not c then continue end
+        if not c then
+            continue
+        end
         local part = c:FindFirstChild(HitboxPart)
-        if part then part.Size = originalSize end
+        if part then
+            part.Size = originalSize
+        end
     end
     OriginalSizes = {}
 end
@@ -349,7 +378,7 @@ getgenv().TriggerbotEnabled = false
 local LastShot        = 0
 local TriggerbotDelay = 0.06
 
--- ==================== ESP LINKS ====================
+--==================== ESP LINKS ====================--
 local ESPObjects = {}
 local R15Links = {
     {"Head","UpperTorso"},
@@ -365,11 +394,15 @@ local R6Links = {
     {"Torso","Left Leg"}, {"Torso","Right Leg"},
 }
 
--- ==================== FUNCIONES ESP ====================
+--==================== FUNCIONES ESP ====================--
 local function CreateESP(p)
-    if ESPObjects[p] then return end
+    if ESPObjects[p] then
+        return
+    end
     local char = p.Character
-    if not char then return end
+    if not char then
+        return
+    end
 
     local data = { Links = char:FindFirstChild("UpperTorso") and R15Links or R6Links }
 
@@ -439,13 +472,17 @@ end
 
 local function RemoveESP(p)
     local d = ESPObjects[p]
-    if not d then return end
+    if not d then
+        return
+    end
     if d.Box       then d.Box:Remove()       end
     if d.Tracer    then d.Tracer:Remove()    end
     if d.Name      then d.Name:Remove()      end
     if d.HBBG      then d.HBBG:Remove()      end
     if d.HB        then d.HB:Remove()        end
-    for _, l in ipairs(d.SkelLines or {}) do l:Remove() end
+    for _, l in ipairs(d.SkelLines or {}) do
+        l:Remove()
+    end
     if d.Highlight then d.Highlight:Destroy() end
     if d.Chams     then d.Chams:Destroy()    end
     ESPObjects[p] = nil
@@ -455,12 +492,14 @@ local function RefreshAllESP()
     for _, p in Players:GetPlayers() do
         if p ~= LP then
             RemoveESP(p)
-            if ESPSettings.Enabled then CreateESP(p) end
+            if ESPSettings.Enabled then
+                CreateESP(p)
+            end
         end
     end
 end
 
--- ==================== AIMBOT LOGIC ====================
+--==================== AIMBOT LOGIC ====================--
 local function GetClosestPlayer()
     local s = Env.Settings
     RequiredDistance = Env.FOVSettings.Enabled and (330 - Env.FOVSettings.Radius) or 2000
@@ -468,27 +507,43 @@ local function GetClosestPlayer()
     local Closest, closest_dist = nil, RequiredDistance
 
     for _, p in Players:GetPlayers() do
-        if p == LP then continue end
+        if p == LP then
+            continue
+        end
         local c = p.Character
         local h = c and c:FindFirstChildOfClass("Humanoid")
-        if not (c and h and h.Health > 0 and c:FindFirstChild(s.LockPart)) then continue end
-        if s.TeamCheck and p.Team == LP.Team then continue end
-        if table.find(Env.Blacklisted, p.Name) then continue end
+        if not (c and h and h.Health > 0 and c:FindFirstChild(s.LockPart)) then
+            continue
+        end
+        if s.TeamCheck and p.Team == LP.Team then
+            continue
+        end
+        if table.find(Env.Blacklisted, p.Name) then
+            continue
+        end
 
         local part = c[s.LockPart]
 
         if s.WallCheck then
             local ignore = {}
             if LP.Character then
-                for _, v in LP.Character:GetDescendants() do table.insert(ignore, v) end
+                for _, v in LP.Character:GetDescendants() do
+                    table.insert(ignore, v)
+                end
             end
-            for _, v in c:GetDescendants() do table.insert(ignore, v) end
-            if #Camera:GetPartsObscuringTarget({part.Position}, ignore) > 0 then continue end
+            for _, v in c:GetDescendants() do
+                table.insert(ignore, v)
+            end
+            if #Camera:GetPartsObscuringTarget({part.Position}, ignore) > 0 then
+                continue
+            end
         end
 
         if s.VisibleCheck then
             local v2, onScr = Camera:WorldToViewportPoint(part.Position)
-            if not onScr or v2.Z < 0 then continue end
+            if not onScr or v2.Z < 0 then
+                continue
+            end
         end
 
         local vec, onScr = Camera:WorldToViewportPoint(part.Position)
@@ -501,7 +556,7 @@ local function GetClosestPlayer()
     return Closest
 end
 
--- ==================== SILENT AIM ====================
+--==================== SILENT AIM ====================--
 local oldNamecall
 oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
     local method = getnamecallmethod()
@@ -522,10 +577,12 @@ oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
     return oldNamecall(self, ...)
 end)
 
--- ==================== RUNSERVICE STEPPED ====================
+--==================== RUNSERVICE STEPPED ====================--
 RunService.Stepped:Connect(function()
     FrameCounter += 1
-    if FrameCounter % 2 ~= 0 then return end
+    if FrameCounter % 2 ~= 0 then
+        return
+    end
 
     local f  = Env.FOVSettings
     local s  = Env.Settings
@@ -536,7 +593,11 @@ RunService.Stepped:Connect(function()
     UpdateCrosshair()
 
     -- Hitbox
-    if HitboxEnabled then ApplyHitbox() end
+    if HitboxEnabled then
+        ApplyHitbox()
+    else
+        RemoveHitbox()
+    end
 
     -- FOV
     if f.Enabled and s.Enabled and not StreamingMode then
@@ -562,10 +623,14 @@ RunService.Stepped:Connect(function()
         fo.Visible = false
     end
 
-    if not ESPSettings.Enabled then return end
+    if not ESPSettings.Enabled then
+        return
+    end
 
     for _, p in Players:GetPlayers() do
-        if p == LP then continue end
+        if p == LP then
+            continue
+        end
 
         local c    = p.Character
         local root = c and c:FindFirstChild("HumanoidRootPart")
@@ -580,12 +645,22 @@ RunService.Stepped:Connect(function()
         local myRoot = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
         local dist   = myRoot and (myRoot.Position - root.Position).Magnitude or 9999
 
-        if dist > ESPSettings.MaxDistance then RemoveESP(p) continue end
-        if ESPSettings.TeamCheck and p.Team == LP.Team then RemoveESP(p) continue end
-        if not ESPObjects[p] then CreateESP(p) end
+        if dist > ESPSettings.MaxDistance then
+            RemoveESP(p)
+            continue
+        end
+        if ESPSettings.TeamCheck and p.Team == LP.Team then
+            RemoveESP(p)
+            continue
+        end
+        if not ESPObjects[p] then
+            CreateESP(p)
+        end
 
         local d = ESPObjects[p]
-        if not d then continue end
+        if not d then
+            continue
+        end
 
         local rPos, onScr = Camera:WorldToViewportPoint(root.Position)
 
@@ -595,7 +670,9 @@ RunService.Stepped:Connect(function()
             d.Name.Visible      = false
             d.HBBG.Visible      = false
             d.HB.Visible        = false
-            for _, l in d.SkelLines do l.Visible = false end
+            for _, l in d.SkelLines do
+                l.Visible = false
+            end
             d.Highlight.Enabled = false
             d.Chams.Adornee     = nil
             continue
@@ -680,7 +757,9 @@ RunService.Stepped:Connect(function()
                 end
             end
         else
-            for _, l in d.SkelLines do l.Visible = false end
+            for _, l in d.SkelLines do
+                l.Visible = false
+            end
         end
 
         -- Highlight
@@ -701,9 +780,11 @@ RunService.Stepped:Connect(function()
     end
 end)
 
--- ==================== AIMBOT HEARTBEAT ====================
+--==================== AIMBOT HEARTBEAT ====================--
 RunService.Heartbeat:Connect(function()
-    if not Running or not Env.Settings.Enabled then return end
+    if not Running or not Env.Settings.Enabled then
+        return
+    end
 
     if Env.Locked then
         local char = Env.Locked.Character
@@ -717,7 +798,10 @@ RunService.Heartbeat:Connect(function()
                     Rayfield:Notify({Title = "🔄 Relock", Content = Env.Locked.Name, Duration = 2})
                 end
             else
-                if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end
+                if CurrentTween then
+                    CurrentTween:Cancel()
+                    CurrentTween = nil
+                end
                 Env.Locked = nil
                 Running    = false
             end
@@ -735,7 +819,9 @@ RunService.Heartbeat:Connect(function()
             )
         else
             if Env.Settings.Sensitivity > 0 then
-                if CurrentTween then CurrentTween:Cancel() end
+                if CurrentTween then
+                    CurrentTween:Cancel()
+                end
                 CurrentTween = TweenService:Create(Camera,
                     TweenInfo.new(Env.Settings.Sensitivity, Enum.EasingStyle.Sine, Enum.EasingDirection.Out),
                     { CFrame = CFrame.new(Camera.CFrame.Position, target) }
@@ -748,25 +834,41 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- ==================== TRIGGERBOT HEARTBEAT ====================
+--==================== TRIGGERBOT HEARTBEAT ====================--
 RunService.Heartbeat:Connect(function()
-    if not getgenv().TriggerbotEnabled then return end
-    if not (Env.Locked and Running) then return end
+    if not getgenv().TriggerbotEnabled then
+        return
+    end
+    if not (Env.Locked and Running) then
+        return
+    end
 
     local char = Env.Locked.Character
     local part = char and char:FindFirstChild(Env.Settings.LockPart)
-    if not part then return end
+    if not part then
+        return
+    end
 
     local myChar = LP.Character
-    if not myChar then return end
+    if not myChar then
+        return
+    end
 
     local ignore = {}
-    for _, v in ipairs(myChar:GetDescendants()) do table.insert(ignore, v) end
-    for _, v in ipairs(char:GetDescendants()) do table.insert(ignore, v) end
-    if #Camera:GetPartsObscuringTarget({part.Position}, ignore) > 0 then return end
+    for _, v in ipairs(myChar:GetDescendants()) do
+        table.insert(ignore, v)
+    end
+    for _, v in ipairs(char:GetDescendants()) do
+        table.insert(ignore, v)
+    end
+    if #Camera:GetPartsObscuringTarget({part.Position}, ignore) > 0 then
+        return
+    end
 
     local vec, onScreen = Camera:WorldToViewportPoint(part.Position)
-    if not onScreen or vec.Z < 0 then return end
+    if not onScreen or vec.Z < 0 then
+        return
+    end
 
     local now = tick()
     if now - LastShot >= TriggerbotDelay then
@@ -777,9 +879,14 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- ==================== INPUT ====================
-UIS.InputBegan:Connect(function(input)
-    if Typing then return end
+--==================== INPUT ====================--
+UIS.InputBegan:Connect(function(input, gpe)
+    if gpe then
+        return
+    end
+    if Typing then
+        return
+    end
     if input.UserInputType == CurrentTriggerKey or input.KeyCode == CurrentTriggerKey then
         if Env.Settings.Toggle then
             Running = not Running
@@ -792,567 +899,393 @@ UIS.InputBegan:Connect(function(input)
                 Rayfield:Notify({Title = "🎯 Locked", Content = "Apuntando a: " .. Env.Locked.Name, Duration = 2})
             end
         else
-            if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end
+            if CurrentTween then
+                CurrentTween:Cancel()
+                CurrentTween = nil
+            end
             Env.Locked = nil
         end
     end
 end)
 
-UIS.InputEnded:Connect(function(input)
-    if Typing or Env.Settings.Toggle then return end
+UIS.InputEnded:Connect(function(input, gpe)
+    if gpe then
+        return
+    end
+    if Typing or Env.Settings.Toggle then
+        return
+    end
     if input.UserInputType == CurrentTriggerKey or input.KeyCode == CurrentTriggerKey then
         Running = false
-        if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end
         Env.Locked = nil
+        if CurrentTween then
+            CurrentTween:Cancel()
+            CurrentTween = nil
+        end
     end
 end)
 
-UIS.TextBoxFocused:Connect(function()       Typing = true  end)
-UIS.TextBoxFocusReleased:Connect(function() Typing = false end)
-Players.PlayerRemoving:Connect(function(p)  RemoveESP(p)   end)
+--==================== UI ELEMENTS ====================--
 
--- ==================== 🎯 AIMBOT TAB ====================
-
+-- Aimbot Tab
 AimbotTab:CreateToggle({
-    Name         = "Enable Aimbot",
-    CurrentValue = true,
-    Flag         = "Aimbot_Enabled",
-    Callback     = function(v) Env.Settings.Enabled = v end
-})
-
-AimbotTab:CreateToggle({
-    Name         = "Auto Relock — Lockear siguiente al morir",
-    CurrentValue = true,
-    Flag         = "Aimbot_AutoRelock",
-    Callback     = function(v) Env.Settings.AutoRelock = v end
-})
-
-AimbotTab:CreateDropdown({
-    Name            = "Parte del Cuerpo",
-    Options         = {"Head", "UpperTorso", "LowerTorso", "HumanoidRootPart"},
-    CurrentOption   = {"Head"},
-    MultipleOptions = false,
-    Flag            = "Aimbot_LockPart",
-    Callback        = function(sel)
-        Env.Settings.LockPart = sel[1]
-        Rayfield:Notify({Title = "Parte", Content = "Apuntando a: " .. sel[1], Duration = 2})
-    end
-})
-
-AimbotTab:CreateDropdown({
-    Name            = "Modo de Activación",
-    Options         = {"Mantener Presionado", "Toggle (Click Único)"},
-    CurrentOption   = {"Mantener Presionado"},
-    MultipleOptions = false,
-    Flag            = "Aimbot_Mode",
-    Callback        = function(sel)
-        Env.Settings.Toggle = (sel[1] == "Toggle (Click Único)")
-        Rayfield:Notify({Title = "Modo", Content = sel[1], Duration = 2})
-    end
-})
-
-AimbotTab:CreateDropdown({
-    Name            = "Tecla de Activación",
-    Options         = {"T", "Q", "E", "Z", "X", "Clic Izquierdo", "Clic Derecho"},
-    CurrentOption   = {"Z"},
-    MultipleOptions = false,
-    Flag            = "Aimbot_TriggerKey",
-    Callback        = function(sel)
-        CurrentTriggerKey = KeyOptions[sel[1]]
-        Rayfield:Notify({Title = "Tecla", Content = "Usando: " .. sel[1], Duration = 2})
-    end
-})
-
-AimbotTab:CreateDropdown({
-    Name            = "Modo de Movimiento",
-    Options         = {"Modo 1 — Suave (Tween)", "Modo 2 — Mouse Directo"},
-    CurrentOption   = {"Modo 1 — Suave (Tween)"},
-    MultipleOptions = false,
-    Flag            = "Aimbot_LockMode",
-    Callback        = function(sel)
-        Env.Settings.LockMode = (sel[1] == "Modo 1 — Suave (Tween)") and 1 or 2
-        Rayfield:Notify({Title = "LockMode", Content = sel[1], Duration = 2})
-    end
-})
-
-AimbotTab:CreateSlider({
-    Name         = "Smoothness — 0 = Instantáneo  (Modo 1)",
-    Range        = {0, 1.5},
-    Increment    = 0.05,
-    CurrentValue = 0,
-    Flag         = "Aimbot_Smoothness",
-    Callback     = function(v) Env.Settings.Sensitivity = v end
-})
-
-AimbotTab:CreateSlider({
-    Name         = "Mouse Sensitivity — Mayor = Más Lento  (Modo 2)",
-    Range        = {1, 20},
-    Increment    = 0.5,
-    CurrentValue = 3.5,
-    Flag         = "Aimbot_Sensitivity2",
-    Callback     = function(v) Env.Settings.Sensitivity2 = v end
-})
-
-AimbotTab:CreateSlider({
-    Name         = "Prediction — 0 = Off | 0.5 = Máximo",
-    Range        = {0, 0.5},
-    Increment    = 0.05,
-    CurrentValue = 0.1,
-    Flag         = "Aimbot_Prediction",
-    Callback     = function(v) Env.Settings.Prediction = v end
-})
-
-AimbotTab:CreateSlider({
-    Name         = "FOV Size — 1 = Pequeño | 100 = Grande",
-    Range        = {1, 100},
-    Increment    = 5,
-    CurrentValue = 90,
-    Flag         = "FOV_Radius",
-    Callback     = function(v) Env.FOVSettings.Radius = v end
-})
-
-AimbotTab:CreateColorPicker({
-    Name     = "FOV Color",
-    Color    = Color3.fromRGB(255, 255, 255),
-    Flag     = "FOV_Color",
-    Callback = function(c) Env.FOVSettings.Color = c end
-})
-
-AimbotTab:CreateColorPicker({
-    Name     = "Locked Color — Color al lockear",
-    Color    = Color3.fromRGB(220, 40, 40),
-    Flag     = "Aimbot_LockedColor",
-    Callback = function(c)
-        Env.FOVSettings.LockedColor = c
-        ESPSettings.LockedColor     = c
+    Name = "Aimbot",
+    CurrentValue = Env.Settings.Enabled,
+    Callback = function(v)
+        Env.Settings.Enabled = v
     end
 })
 
 AimbotTab:CreateToggle({
-    Name         = "Rainbow FOV",
-    CurrentValue = false,
-    Flag         = "FOV_Rainbow",
-    Callback     = function(v) Env.FOVSettings.RainbowColor = v end
+    Name = "Auto Relock",
+    CurrentValue = Env.Settings.AutoRelock,
+    Callback = function(v)
+        Env.Settings.AutoRelock = v
+    end
 })
 
 AimbotTab:CreateToggle({
-    Name         = "Team Check — No apuntar a aliados",
-    CurrentValue = false,
-    Flag         = "Aimbot_TeamCheck",
-    Callback     = function(v) Env.Settings.TeamCheck = v end
+    Name = "Team Check",
+    CurrentValue = Env.Settings.TeamCheck,
+    Callback = function(v)
+        Env.Settings.TeamCheck = v
+    end
 })
 
 AimbotTab:CreateToggle({
-    Name         = "Visible Check — Solo jugadores en pantalla",
-    CurrentValue = false,
-    Flag         = "VisibleCheck",
-    Callback     = function(v)
+    Name = "Wall Check",
+    CurrentValue = Env.Settings.WallCheck,
+    Callback = function(v)
+        Env.Settings.WallCheck = v
+    end
+})
+
+AimbotTab:CreateToggle({
+    Name = "Visible Check",
+    CurrentValue = Env.Settings.VisibleCheck,
+    Callback = function(v)
         Env.Settings.VisibleCheck = v
-        Rayfield:Notify({Title = "Visible Check", Content = v and "✅ ON" or "❌ OFF", Duration = 2})
-    end
-})
-
-AimbotTab:CreateToggle({
-    Name         = "Notificación al Lockear",
-    CurrentValue = true,
-    Flag         = "Aimbot_NotifyLock",
-    Callback     = function(v) NotifyLock = v end
-})
-
-AimbotTab:CreateToggle({
-    Name         = "Silent Aim — Disparo invisible al objetivo",
-    CurrentValue = false,
-    Flag         = "Aimbot_SilentAim",
-    Callback     = function(v)
-        SilentAimEnabled = v
-        Rayfield:Notify({Title = "Silent Aim", Content = v and "✅ ON" or "❌ OFF", Duration = 2})
     end
 })
 
 AimbotTab:CreateDropdown({
-    Name            = "Silent Aim — Parte del cuerpo",
-    Options         = {"Head", "UpperTorso", "HumanoidRootPart"},
-    CurrentOption   = {"HumanoidRootPart"},
-    MultipleOptions = false,
-    Flag            = "Aimbot_SilentAimPart",
-    Callback        = function(sel) SilentAimPart = sel[1] end
-})
-
-AimbotTab:CreateToggle({
-    Name         = "Triggerbot — Disparo Inteligente",
-    CurrentValue = false,
-    Flag         = "Triggerbot_Enabled",
-    Callback     = function(v)
-        getgenv().TriggerbotEnabled = v
-        Rayfield:Notify({Title = "Triggerbot", Content = v and "✅ ON" or "❌ OFF", Duration = 2})
+    Name = "Lock Part",
+    Options = {"Head", "HumanoidRootPart"},
+    CurrentOption = Env.Settings.LockPart,
+    Callback = function(v)
+        Env.Settings.LockPart = v
     end
 })
 
 AimbotTab:CreateSlider({
-    Name         = "Triggerbot Speed — 1 = Muy Rápido | 12 = Lento",
-    Range        = {1, 12},
-    Increment    = 1,
-    CurrentValue = 6,
-    Flag         = "Triggerbot_Delay",
-    Callback     = function(v) TriggerbotDelay = v / 100 end
+    Name = "Prediction",
+    Range = {0, 0.5},
+    Increment = 0.01,
+    CurrentValue = Env.Settings.Prediction,
+    Callback = function(v)
+        Env.Settings.Prediction = v
+    end
 })
 
--- ==================== 🎨 VISUALS TAB ====================
+AimbotTab:CreateSlider({
+    Name = "Camera Sensitivity",
+    Range = {0, 1},
+    Increment = 0.01,
+    CurrentValue = Env.Settings.Sensitivity,
+    Callback = function(v)
+        Env.Settings.Sensitivity = v
+    end
+})
 
+AimbotTab:CreateSlider({
+    Name = "Mouse Sensitivity",
+    Range = {1, 10},
+    Increment = 0.1,
+    CurrentValue = Env.Settings.Sensitivity2,
+    Callback = function(v)
+        Env.Settings.Sensitivity2 = v
+    end
+})
+
+AimbotTab:CreateDropdown({
+    Name = "Lock Mode",
+    Options = {"Camera", "Mouse"},
+    CurrentOption = Env.Settings.LockMode == 1 and "Camera" or "Mouse",
+    Callback = function(v)
+        Env.Settings.LockMode = (v == "Camera") and 1 or 2
+    end
+})
+
+AimbotTab:CreateToggle({
+    Name = "Silent Aim",
+    CurrentValue = Env.Settings.SilentAim,
+    Callback = function(v)
+        Env.Settings.SilentAim = v
+        SilentAimEnabled = v
+    end
+})
+
+AimbotTab:CreateDropdown({
+    Name = "Trigger Key",
+    Options = {"T","Q","E","Z","X","Clic Izquierdo","Clic Derecho"},
+    CurrentOption = "Z",
+    Callback = function(v)
+        CurrentTriggerKey = KeyOptions[v] or Enum.KeyCode.Z
+    end
+})
+
+-- FOV
+AimbotTab:CreateToggle({
+    Name = "FOV Enabled",
+    CurrentValue = Env.FOVSettings.Enabled,
+    Callback = function(v)
+        Env.FOVSettings.Enabled = v
+    end
+})
+
+AimbotTab:CreateSlider({
+    Name = "FOV Radius",
+    Range = {10, 300},
+    Increment = 1,
+    CurrentValue = Env.FOVSettings.Radius,
+    Callback = function(v)
+        Env.FOVSettings.Radius = v
+    end
+})
+
+AimbotTab:CreateToggle({
+    Name = "FOV Visible",
+    CurrentValue = Env.FOVSettings.Visible,
+    Callback = function(v)
+        Env.FOVSettings.Visible = v
+    end
+})
+
+-- Visuals Tab
 VisualsTab:CreateToggle({
-    Name         = "Enable ESP",
-    CurrentValue = false,
-    Flag         = "ESP_Enabled",
-    Callback     = function(v)
+    Name = "ESP",
+    CurrentValue = ESPSettings.Enabled,
+    Callback = function(v)
         ESPSettings.Enabled = v
         RefreshAllESP()
     end
 })
 
-VisualsTab:CreateColorPicker({
-    Name     = "ESP Color",
-    Color    = Color3.fromRGB(255, 50, 50),
-    Flag     = "ESP_Color",
-    Callback = function(c) ESPSettings.Color = c end
-})
-
-VisualsTab:CreateColorPicker({
-    Name     = "Locked ESP Color",
-    Color    = Color3.fromRGB(220, 40, 40),
-    Flag     = "ESP_LockedColor",
-    Callback = function(c) ESPSettings.LockedColor = c end
+VisualsTab:CreateToggle({
+    Name = "Boxes",
+    CurrentValue = ESPSettings.Boxes,
+    Callback = function(v)
+        ESPSettings.Boxes = v
+    end
 })
 
 VisualsTab:CreateToggle({
-    Name         = "Rainbow Colors",
-    CurrentValue = false,
-    Flag         = "ESP_Rainbow",
-    Callback     = function(v) ESPSettings.Rainbow = v end
+    Name = "Tracers",
+    CurrentValue = ESPSettings.Tracers,
+    Callback = function(v)
+        ESPSettings.Tracers = v
+    end
 })
 
 VisualsTab:CreateToggle({
-    Name         = "Boxes",
-    CurrentValue = true,
-    Flag         = "ESP_Boxes",
-    Callback     = function(v) ESPSettings.Boxes = v end
+    Name = "Names",
+    CurrentValue = ESPSettings.Names,
+    Callback = function(v)
+        ESPSettings.Names = v
+    end
 })
 
 VisualsTab:CreateToggle({
-    Name         = "Tracers",
-    CurrentValue = true,
-    Flag         = "ESP_Tracers",
-    Callback     = function(v) ESPSettings.Tracers = v end
+    Name = "Skeleton",
+    CurrentValue = ESPSettings.Skeleton,
+    Callback = function(v)
+        ESPSettings.Skeleton = v
+    end
 })
 
 VisualsTab:CreateToggle({
-    Name         = "Names + HP + Distancia",
-    CurrentValue = true,
-    Flag         = "ESP_Names",
-    Callback     = function(v) ESPSettings.Names = v end
+    Name = "Health Bars",
+    CurrentValue = ESPSettings.HealthBars,
+    Callback = function(v)
+        ESPSettings.HealthBars = v
+    end
 })
 
 VisualsTab:CreateToggle({
-    Name         = "Health Bars",
-    CurrentValue = true,
-    Flag         = "ESP_HealthBars",
-    Callback     = function(v) ESPSettings.HealthBars = v end
+    Name = "Chams",
+    CurrentValue = ESPSettings.Chams,
+    Callback = function(v)
+        ESPSettings.Chams = v
+    end
 })
 
 VisualsTab:CreateToggle({
-    Name         = "Skeleton",
-    CurrentValue = true,
-    Flag         = "ESP_Skeleton",
-    Callback     = function(v) ESPSettings.Skeleton = v end
-})
-
-VisualsTab:CreateToggle({
-    Name         = "Chams — Color sólido en enemigos",
-    CurrentValue = false,
-    Flag         = "ESP_Chams",
-    Callback     = function(v) ESPSettings.Chams = v end
-})
-
-VisualsTab:CreateColorPicker({
-    Name     = "Chams Color",
-    Color    = Color3.fromRGB(255, 50, 50),
-    Flag     = "ESP_ChamsColor",
-    Callback = function(c) ESPSettings.ChamsColor = c end
+    Name = "Team Check",
+    CurrentValue = ESPSettings.TeamCheck,
+    Callback = function(v)
+        ESPSettings.TeamCheck = v
+    end
 })
 
 VisualsTab:CreateSlider({
-    Name         = "Line Thickness",
-    Range        = {1, 5},
-    Increment    = 1,
-    CurrentValue = 2,
-    Flag         = "ESP_Thickness",
-    Callback     = function(v) ESPSettings.Thickness = v end
+    Name = "ESP Max Distance",
+    Range = {50, 2000},
+    Increment = 50,
+    CurrentValue = ESPSettings.MaxDistance,
+    Callback = function(v)
+        ESPSettings.MaxDistance = v
+    end
 })
 
 VisualsTab:CreateSlider({
-    Name         = "Text Size",
-    Range        = {12, 24},
-    Increment    = 1,
-    CurrentValue = 16,
-    Flag         = "ESP_TextSize",
-    Callback     = function(v) ESPSettings.TextSize = v end
-})
-
-VisualsTab:CreateSlider({
-    Name         = "Highlight Fill — 0 = Sólido | 10 = Invisible",
-    Range        = {0, 10},
-    Increment    = 1,
-    CurrentValue = 5,
-    Flag         = "ESP_HighlightTransp",
-    Callback     = function(v) ESPSettings.HighlightTransparency = v / 10 end
-})
-
-VisualsTab:CreateSlider({
-    Name         = "Max Distance ESP",
-    Range        = {50, 2000},
-    Increment    = 50,
-    CurrentValue = 500,
-    Flag         = "ESP_MaxDistance",
-    Callback     = function(v) ESPSettings.MaxDistance = v end
-})
-
-VisualsTab:CreateToggle({
-    Name         = "Team Check — No mostrar aliados",
-    CurrentValue = true,
-    Flag         = "ESP_TeamCheck",
-    Callback     = function(v) ESPSettings.TeamCheck = v end
-})
-
-VisualsTab:CreateToggle({
-    Name         = "Crosshair Personalizado",
-    CurrentValue = false,
-    Flag         = "Crosshair_Enabled",
-    Callback     = function(v) CrosshairEnabled = v end
+    Name = "ESP Thickness",
+    Range = {1, 5},
+    Increment = 0.5,
+    CurrentValue = ESPSettings.Thickness,
+    Callback = function(v)
+        ESPSettings.Thickness = v
+    end
 })
 
 VisualsTab:CreateColorPicker({
-    Name     = "Crosshair Color",
-    Color    = Color3.fromRGB(255, 255, 255),
-    Flag     = "Crosshair_Color",
-    Callback = function(c) CrosshairColor = c end
+    Name = "ESP Color",
+    Color = ESPSettings.Color,
+    Callback = function(c)
+        ESPSettings.Color = c
+    end
 })
 
-VisualsTab:CreateSlider({
-    Name         = "Crosshair Size",
-    Range        = {5, 30},
-    Increment    = 1,
-    CurrentValue = 10,
-    Flag         = "Crosshair_Size",
-    Callback     = function(v) CrosshairSize = v end
-})
-
-VisualsTab:CreateSlider({
-    Name         = "Crosshair Thickness",
-    Range        = {1, 5},
-    Increment    = 1,
-    CurrentValue = 1,
-    Flag         = "Crosshair_Thick",
-    Callback     = function(v) CrosshairThick = v end
-})
-
--- ==================== ⚡ MISC TAB ====================
-
+-- Misc Tab
 MiscTab:CreateToggle({
-    Name         = "Anti AFK",
-    CurrentValue = false,
-    Flag         = "Misc_AntiAFK",
-    Callback     = function(v)
+    Name = "Anti AFK",
+    CurrentValue = AntiAFKEnabled,
+    Callback = function(v)
         AntiAFKEnabled = v
-        Rayfield:Notify({Title = "Anti AFK", Content = v and "✅ ON" or "❌ OFF", Duration = 2})
     end
 })
 
 MiscTab:CreateToggle({
-    Name         = "Hitbox Expander",
-    CurrentValue = false,
-    Flag         = "Misc_Hitbox",
-    Callback     = function(v)
+    Name = "Hitbox Expander",
+    CurrentValue = HitboxEnabled,
+    Callback = function(v)
         HitboxEnabled = v
-        if not v then RemoveHitbox() end
-        Rayfield:Notify({Title = "Hitbox Expander", Content = v and "✅ ON" or "❌ OFF", Duration = 2})
+        if not v then
+            RemoveHitbox()
+        end
     end
 })
 
 MiscTab:CreateSlider({
-    Name         = "Hitbox Size",
-    Range        = {1, 20},
-    Increment    = 1,
-    CurrentValue = 5,
-    Flag         = "Misc_HitboxSize",
-    Callback     = function(v)
+    Name = "Hitbox Size",
+    Range = {2, 10},
+    Increment = 0.5,
+    CurrentValue = HitboxSize,
+    Callback = function(v)
         HitboxSize = v
-        if HitboxEnabled then
-            RemoveHitbox()
-            ApplyHitbox()
-        end
     end
 })
 
 MiscTab:CreateDropdown({
-    Name            = "Hitbox — Parte del cuerpo",
-    Options         = {"HumanoidRootPart", "Head", "UpperTorso", "LowerTorso"},
-    CurrentOption   = {"HumanoidRootPart"},
-    MultipleOptions = false,
-    Flag            = "Misc_HitboxPart",
-    Callback        = function(sel)
-        if HitboxEnabled then RemoveHitbox() end
-        HitboxPart = sel[1]
-        if HitboxEnabled then ApplyHitbox() end
+    Name = "Hitbox Part",
+    Options = {"HumanoidRootPart","Head"},
+    CurrentOption = HitboxPart,
+    Callback = function(v)
+        HitboxPart = v
     end
 })
 
--- ==================== ⚙️ SETTINGS TAB ====================
-
-SettingsTab:CreateButton({
-    Name     = "💾 Guardar Configuración",
-    Callback = function()
-        Rayfield:SaveConfiguration()
-        Rayfield:Notify({Title = "Guardado", Content = "Configuración guardada.", Duration = 2})
+MiscTab:CreateToggle({
+    Name = "Crosshair",
+    CurrentValue = CrosshairEnabled,
+    Callback = function(v)
+        CrosshairEnabled = v
     end
 })
 
-SettingsTab:CreateButton({
-    Name     = "📂 Cargar Configuración",
-    Callback = function()
-        Rayfield:LoadConfiguration()
-        Rayfield:Notify({Title = "Cargado", Content = "Configuración cargada.", Duration = 2})
+MiscTab:CreateSlider({
+    Name = "Crosshair Size",
+    Range = {5, 30},
+    Increment = 1,
+    CurrentValue = CrosshairSize,
+    Callback = function(v)
+        CrosshairSize = v
+    end
+})
+
+MiscTab:CreateSlider({
+    Name = "Crosshair Thickness",
+    Range = {1, 5},
+    Increment = 0.5,
+    CurrentValue = CrosshairThick,
+    Callback = function(v)
+        CrosshairThick = v
+        CreateCrosshair()
+    end
+})
+
+MiscTab:CreateColorPicker({
+    Name = "Crosshair Color",
+    Color = CrosshairColor,
+    Callback = function(c)
+        CrosshairColor = c
+    end
+})
+
+MiscTab:CreateToggle({
+    Name = "Triggerbot",
+    CurrentValue = getgenv().TriggerbotEnabled,
+    Callback = function(v)
+        getgenv().TriggerbotEnabled = v
+    end
+})
+
+MiscTab:CreateSlider({
+    Name = "Triggerbot Delay",
+    Range = {0.01, 0.2},
+    Increment = 0.005,
+    CurrentValue = TriggerbotDelay,
+    Callback = function(v)
+        TriggerbotDelay = v
+    end
+})
+
+-- Settings Tab
+SettingsTab:CreateToggle({
+    Name = "Streaming Mode (oculta visuales)",
+    CurrentValue = StreamingMode,
+    Callback = function(v)
+        StreamingMode = v
+        Env.FOVCircle.Visible        = not v
+        Env.FOVCircleOutline.Visible = not v
+        if v then
+            for _, p in Players:GetPlayers() do
+                if p ~= LP then
+                    RemoveESP(p)
+                end
+            end
+        else
+            RefreshAllESP()
+        end
     end
 })
 
 SettingsTab:CreateToggle({
-    Name         = "Modo Streaming — Oculta ESP, FOV y Notificaciones",
-    CurrentValue = false,
-    Flag         = "StreamingMode",
-    Callback     = function(v)
-        StreamingMode = v
-        Env.FOVSettings.Visible = not v
-        if not v then
-            Rayfield:Notify({Title = "Streaming", Content = "❌ Desactivado", Duration = 3})
-        end
+    Name = "Notificar Lock",
+    CurrentValue = NotifyLock,
+    Callback = function(v)
+        NotifyLock = v
     end
 })
 
 SettingsTab:CreateButton({
-    Name     = "⛔ PANIC — Desactivar Todo",
+    Name = "Reset Config",
     Callback = function()
-        Env.Settings.Enabled        = false
-        ESPSettings.Enabled         = false
-        getgenv().TriggerbotEnabled = false
-        SilentAimEnabled            = false
-        HitboxEnabled               = false
-        CrosshairEnabled            = false
-        AntiAFKEnabled              = false
-        Env.FOVSettings.Visible     = false
-        Running                     = false
-        Env.Locked                  = nil
-        if CurrentTween then CurrentTween:Cancel() CurrentTween = nil end
-        for p in pairs(ESPObjects) do RemoveESP(p) end
-        RemoveHitbox()
-        for _, l in ipairs(CrosshairLines) do l.Visible = false end
-        Rayfield:Notify({Title = "⛔ PANIC", Content = "Todo desactivado.", Duration = 3})
+        Rayfield:Destroy()
     end
 })
 
--- ==================== CARGAR CONFIG ====================
-Rayfield:LoadConfiguration()
-
-task.spawn(function()
-    task.wait(2)
-
-    local kf = Rayfield.Flags["Aimbot_TriggerKey"]
-    if kf and kf.CurrentOption and #kf.CurrentOption > 0 then
-        CurrentTriggerKey = KeyOptions[kf.CurrentOption[1]] or Enum.KeyCode.Z
-    end
-
-    local tbf = Rayfield.Flags["Triggerbot_Enabled"]
-    if tbf then getgenv().TriggerbotEnabled = tbf.CurrentValue end
-
-    local tdf = Rayfield.Flags["Triggerbot_Delay"]
-    if tdf then TriggerbotDelay = tdf.CurrentValue / 100 end
-
-    local vcf = Rayfield.Flags["VisibleCheck"]
-    if vcf then Env.Settings.VisibleCheck = vcf.CurrentValue end
-
-    local s2f = Rayfield.Flags["Aimbot_Sensitivity2"]
-    if s2f then Env.Settings.Sensitivity2 = s2f.CurrentValue end
-
-    local mdf = Rayfield.Flags["ESP_MaxDistance"]
-    if mdf then ESPSettings.MaxDistance = mdf.CurrentValue end
-
-    local htf = Rayfield.Flags["ESP_HighlightTransp"]
-    if htf then ESPSettings.HighlightTransparency = htf.CurrentValue / 10 end
-
-    local lmf = Rayfield.Flags["Aimbot_LockMode"]
-    if lmf and lmf.CurrentOption then
-        Env.Settings.LockMode = (lmf.CurrentOption[1] == "Modo 1 — Suave (Tween)") and 1 or 2
-    end
-
-    local nlf = Rayfield.Flags["Aimbot_NotifyLock"]
-    if nlf then NotifyLock = nlf.CurrentValue end
-
-    local arf = Rayfield.Flags["Aimbot_AutoRelock"]
-    if arf then Env.Settings.AutoRelock = arf.CurrentValue end
-
-    local prf = Rayfield.Flags["Aimbot_Prediction"]
-    if prf then Env.Settings.Prediction = prf.CurrentValue end
-
-    local saf = Rayfield.Flags["Aimbot_SilentAim"]
-    if saf then SilentAimEnabled = saf.CurrentValue end
-
-    local hbf = Rayfield.Flags["Misc_Hitbox"]
-    if hbf then HitboxEnabled = hbf.CurrentValue end
-
-    local hbsf = Rayfield.Flags["Misc_HitboxSize"]
-    if hbsf then HitboxSize = hbsf.CurrentValue end
-
-    local aaf = Rayfield.Flags["Misc_AntiAFK"]
-    if aaf then AntiAFKEnabled = aaf.CurrentValue end
-
-    local crf = Rayfield.Flags["Crosshair_Enabled"]
-    if crf then CrosshairEnabled = crf.CurrentValue end
-
-    local fcf = Rayfield.Flags["FOV_Color"]
-    if fcf then
-        local c = fcf.Value or fcf.Color or fcf.CurrentValue
-        if c then Env.FOVSettings.Color = c end
-    end
-
-    local lcf = Rayfield.Flags["Aimbot_LockedColor"]
-    if lcf then
-        local c = lcf.Value or lcf.Color or lcf.CurrentValue
-        if c then
-            Env.FOVSettings.LockedColor = c
-            ESPSettings.LockedColor     = c
-        end
-    end
-
-    local ecf = Rayfield.Flags["ESP_Color"]
-    if ecf then
-        local c = ecf.Value or ecf.Color or ecf.CurrentValue
-        if c then ESPSettings.Color = c end
-    end
-
-    local elcf = Rayfield.Flags["ESP_LockedColor"]
-    if elcf then
-        local c = elcf.Value or elcf.Color or elcf.CurrentValue
-        if c then ESPSettings.LockedColor = c end
-    end
-
-    local chcf = Rayfield.Flags["ESP_ChamsColor"]
-    if chcf then
-        local c = chcf.Value or chcf.Color or chcf.CurrentValue
-        if c then ESPSettings.ChamsColor = c end
-    end
-
-    local espf = Rayfield.Flags["ESP_Enabled"]
-    if espf and espf.CurrentValue then
-        ESPSettings.Enabled = true
-        RefreshAllESP()
-    end
-end)
-
-print("✅ Owen Xit Hub — Cargado correctamente")
+Rayfield:Notify({
+    Title = "✅ Owen Xit Hub",
+    Content = "Versión ULTRA PRO cargada correctamente.",
+    Duration = 4
+})
